@@ -41,9 +41,21 @@
                 Prihlásiť sa
             </button>
 
+            <div class="oauth-divider">
+                <span>alebo</span>
+            </div>
+
+            <a href="{{ url_for('google.login') }}" class="google-btn">
+                Prihlásiť sa cez Google
+            </a>
+
             <p class="register-link">
                 Nemáte účet?
                 <a href="{{ url_for('registracia') }}">Registrovať sa</a>
+            </p>
+
+            <p class="required-note-bottom">
+                <span>*</span> povinný údaj
             </p>
 
         </form>

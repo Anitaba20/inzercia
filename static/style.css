@@ -211,6 +211,7 @@ body{
     background:#1d4ed8;
 }
 
+
 /******** PRIHLASENIE ********/
 
 .login-wrapper{
@@ -301,4 +302,44 @@ body{
 .reset-test-link a{
     color:#2563eb;
     text-decoration:none;
+}
+
+/******** GOOGLE OAUTH ********/
+
+.oauth-divider{
+    text-align:center;
+    margin:18px 0;
+    color:#777;
+}
+
+.google-btn{
+    display:block;
+    width:100%;
+    padding:13px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    text-align:center;
+    text-decoration:none;
+    color:#222;
+    font-weight:bold;
+    background:white;
+}
+
+.google-btn:hover{
+    background:#f3f4f6;
+}
+
+/******** POVINNY UDAJ ********/
+
+.required-note-bottom{
+    margin-top:10px;
+    margin-bottom:15px;
+    font-size:14px;
+    color:#666;
+    text-align:left;
+}
+
+.required-note-bottom span{
+    color:#e53935;
+    font-weight:bold;
 }

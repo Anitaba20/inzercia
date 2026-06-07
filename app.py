@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
+from flask_dance.contrib.google import make_google_blueprint, google
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
@@ -9,6 +11,8 @@ import os
 
 load_dotenv()
 
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
 app = Flask(__name__)
 
 app.secret_key = os.getenv("SECRET_KEY")
@@ -16,9 +20,31 @@ app.secret_key = os.getenv("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_USERNAME")
+
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 
 db = SQLAlchemy(app)
+mail = Mail(app)
+
+
+google_blueprint = make_google_blueprint(
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    scope=[
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile"
+    ],
+    redirect_to="google_prihlasenie"
+)
+
+app.register_blueprint(google_blueprint, url_prefix="/login")
 
 
 class User(db.Model):
@@ -54,6 +80,30 @@ def over_reset_token(token):
 
     except jwt.InvalidTokenError:
         return None
+
+
+def posli_reset_email(email, reset_link):
+    sprava = Message(
+        subject="Reset hesla - služby.sk",
+        recipients=[email]
+    )
+
+    sprava.body = f"""
+Dobrý deň,
+
+požiadali ste o reset hesla na stránke služby.sk.
+
+Kliknite na tento odkaz:
+{reset_link}
+
+Odkaz je platný 30 minút.
+
+Ak ste o reset hesla nežiadali, tento e-mail ignorujte.
+
+služby.sk
+"""
+
+    mail.send(sprava)
 
 
 @app.route("/")
@@ -133,6 +183,44 @@ def prihlasenie():
     return render_template("auth/prihlasenie.html", chyba=chyba, email=email, sprava=sprava)
 
 
+@app.route("/google-prihlasenie")
+def google_prihlasenie():
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+
+    response = google.get("/oauth2/v2/userinfo")
+
+    if not response.ok:
+        return redirect(url_for(
+            "prihlasenie",
+            sprava="Prihlásenie cez Google sa nepodarilo."
+        ))
+
+    google_data = response.json()
+
+    email = google_data.get("email", "").strip().lower()
+    google_name = google_data.get("name", "")
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        nahodne_heslo = generate_password_hash(os.urandom(24).hex())
+
+        user = User(
+            username=google_name,
+            email=email,
+            password=nahodne_heslo
+        )
+
+        db.session.add(user)
+        db.session.commit()
+
+    session["user_id"] = user.id
+    session["user_name"] = user.username
+
+    return redirect(url_for("index"))
+
+
 @app.route("/odhlasenie")
 def odhlasenie():
     session.clear()
@@ -143,7 +231,6 @@ def odhlasenie():
 def zabudnute_heslo():
     chyba = ""
     sprava = ""
-    reset_link = ""
 
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
@@ -155,13 +242,15 @@ def zabudnute_heslo():
         else:
             token = vytvor_reset_token(user.id)
             reset_link = url_for("reset_hesla", token=token, _external=True)
-            sprava = "Resetovací odkaz bol vytvorený. V ostrej verzii sa odošle e-mailom."
+
+            posli_reset_email(email, reset_link)
+
+            sprava = "Resetovací odkaz bol odoslaný na váš e-mail."
 
     return render_template(
         "auth/zabudnute_heslo.html",
         chyba=chyba,
-        sprava=sprava,
-        reset_link=reset_link
+        sprava=sprava
     )
 
 
