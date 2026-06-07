@@ -1,0 +1,40 @@
+<div class="header-page">
+
+    <header class="header">
+
+        <div class="logo">
+            <div class="logo-main">služby.sk</div>
+            <div class="logo-sub">Inzercia služieb</div>
+        </div>
+
+        <div class="menu">
+
+            {% if session.get("user_id") %}
+
+                <span>{{ session.get("user_name") }}</span>
+                <span>|</span>
+                <a href="{{ url_for('odhlasenie') }}">Odhlásiť</a>
+
+                <a href="#" class="btn">
+                    Pridať inzerát
+                </a>
+
+            {% else %}
+
+                <a href="{{ url_for('prihlasenie') }}">Prihlásenie</a>
+                <span>|</span>
+                <a href="{{ url_for('registracia') }}">Registrácia</a>
+
+                <a href="#" class="btn">
+                    Pridať inzerát
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </header>
+
+    <div class="line"></div>
+
+</div>

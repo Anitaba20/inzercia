@@ -1,0 +1,67 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Prihlásenie{% endblock %}
+
+{% block content %}
+
+<div class="main-page">
+
+    <div class="login-wrapper">
+
+        <form class="login-card" method="POST">
+
+            <h1>Prihlásenie</h1>
+
+            {% if sprava %}
+                <p class="success-message">{{ sprava }}</p>
+            {% endif %}
+
+            {% if chyba %}
+                <p class="error-message">{{ chyba }}</p>
+            {% endif %}
+
+            <label>E-mail <span>*</span></label>
+            <div class="input-box">
+                <span>✉️</span>
+                <input type="email" name="email" value="{{ email }}" required>
+            </div>
+
+            <label>Heslo <span>*</span></label>
+            <div class="input-box">
+                <span>🔒</span>
+                <input type="password" id="login-password" name="password" required>
+                <button type="button" onclick="togglePassword('login-password')">👁</button>
+            </div>
+
+            <div class="forgot-password">
+                <a href="{{ url_for('zabudnute_heslo') }}">Zabudli ste heslo?</a>
+            </div>
+
+            <button type="submit" class="login-btn">
+                Prihlásiť sa
+            </button>
+
+            <p class="register-link">
+                Nemáte účet?
+                <a href="{{ url_for('registracia') }}">Registrovať sa</a>
+            </p>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+function togglePassword(id) {
+    const input = document.getElementById(id);
+
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
+    }
+}
+</script>
+
+{% endblock %}

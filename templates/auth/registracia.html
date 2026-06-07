@@ -1,0 +1,98 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Registrácia{% endblock %}
+
+{% block content %}
+
+<div class="main-page">
+
+    <div class="register-wrapper">
+
+        <form class="register-card" method="POST">
+
+            <h1>Registrácia</h1>
+
+            {% if chyba %}
+                <p class="error-message">{{ chyba }}</p>
+            {% endif %}
+
+            {% if uspech %}
+                <p class="success-message">{{ uspech }}</p>
+            {% endif %}
+
+            <label>Používateľské meno <span>*</span></label>
+            <div class="input-box">
+                <span>👤</span>
+                <input type="text" name="username" required>
+            </div>
+
+            <label>E-mail <span>*</span></label>
+            <div class="input-box">
+                <span>✉️</span>
+                <input type="email" name="email" required>
+            </div>
+
+            <label>Heslo <span>*</span></label>
+            <div class="input-box">
+                <span>🔒</span>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    minlength="8"
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+                    title="Heslo musí mať minimálne 8 znakov, jedno veľké písmeno, jedno malé písmeno a jednu číslicu."
+                >
+                <button type="button" onclick="togglePassword('password')">👁</button>
+            </div>
+
+            <div class="password-info">
+                <strong>Heslo musí obsahovať:</strong>
+                <p>✓ minimálne 8 znakov</p>
+                <p>✓ jedno veľké písmeno</p>
+                <p>✓ jedno malé písmeno</p>
+                <p>✓ jednu číslicu</p>
+            </div>
+
+            <label>Zopakuj heslo <span>*</span></label>
+            <div class="input-box">
+                <span>🔒</span>
+                <input
+                    type="password"
+                    id="password2"
+                    name="password2"
+                    required
+                    minlength="8"
+                >
+                <button type="button" onclick="togglePassword('password2')">👁</button>
+            </div>
+
+            <label class="checkbox-row">
+                <input type="checkbox" name="terms" required>
+                Súhlasím s <a href="#">podmienkami používania</a>
+            </label>
+
+            <button type="submit" class="register-btn">
+                Registrovať sa
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+function togglePassword(id) {
+    const input = document.getElementById(id);
+
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
+    }
+}
+</script>
+
+{% endblock %}
