@@ -1,0 +1,99 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Detail inzerátu{% endblock %}
+
+{% block content %}
+
+<div class="main-page">
+
+    <div class="detail-page">
+
+        <section class="detail-main">
+
+            <div class="detail-actions">
+                <button>🔗 Zdieľať</button>
+                <button onclick="window.print()">🖨️ Vytlačiť</button>
+            </div>
+
+            <h1>{{ inzerat.nazov }}</h1>
+
+            <p class="detail-location">📍 {{ inzerat.lokalita }}</p>
+
+            <p class="detail-date">
+                Pridané: {{ inzerat.datum_pridania.strftime("%d. %m. %Y") }}
+            </p>
+
+            <h2>
+                Cena:
+                {% if inzerat.cena %}
+                    {{ inzerat.cena }}
+                {% else %}
+                    dohodou
+                {% endif %}
+            </h2>
+
+            <div class="detail-rating">
+                ⭐ 4.8 / 5
+            </div>
+
+            <h3>Popis služby</h3>
+
+            <p>
+                {{ inzerat.popis }}
+            </p>
+
+            <button class="contact-btn">
+                Kontaktovať poskytovateľa
+            </button>
+
+            <button class="question-btn">
+                ❓ Položiť otázku
+            </button>
+
+            <section class="reviews">
+                <h3>Recenzie</h3>
+
+                <div class="review">
+                    <p>Zatiaľ bez recenzií.</p>
+                </div>
+            </section>
+
+        </section>
+
+        <aside class="provider-box">
+
+            <h3>Poskytovateľ</h3>
+
+            {% if poskytovatel %}
+                <p><strong>{{ poskytovatel.username }}</strong></p>
+            {% else %}
+                <p><strong>Neznámy používateľ</strong></p>
+            {% endif %}
+
+            <p>⭐ 4.8 / 5</p>
+
+            <p>Počet inzerátov: {{ pocet_inzeratov }}</p>
+
+            <h3>Ďalšie inzeráty</h3>
+
+            {% if dalsie_inzeraty %}
+
+                {% for iny_inzerat in dalsie_inzeraty %}
+                    <a href="{{ url_for('detail_inzeratu', inzerat_id=iny_inzerat.id) }}">
+                        {{ iny_inzerat.nazov }}
+                    </a>
+                {% endfor %}
+
+            {% else %}
+
+                <p>Žiadne ďalšie inzeráty.</p>
+
+            {% endif %}
+
+        </aside>
+
+    </div>
+
+</div>
+
+{% endblock %}

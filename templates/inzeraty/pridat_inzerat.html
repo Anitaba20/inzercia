@@ -1,0 +1,70 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Pridať inzerát{% endblock %}
+
+{% block content %}
+
+<div class="main-page">
+
+    <div class="add-ad-page">
+
+        <h1>Pridať inzerát</h1>
+
+        <form class="add-ad-form" method="POST">
+
+            {% if not session.get("user_id") %}
+                <p class="info-message">
+                    Pre pridanie inzerátu sa musíte prihlásiť.
+                </p>
+            {% endif %}
+
+            {% if chyba %}
+                <p class="error-message">{{ chyba }}</p>
+            {% endif %}
+
+            {% if uspech %}
+                <p class="success-message">{{ uspech }}</p>
+            {% endif %}
+
+            <label>Názov služby <span>*</span></label>
+            <input type="text" name="title" placeholder="napr. Rekonštrukcie bytov">
+
+            <label>Kategória <span>*</span></label>
+            <select name="category">
+                <option>Dom a bývanie</option>
+                <option>Doučovanie</option>
+            </select>
+
+            <label>Cena</label>
+            <input type="text" name="price" placeholder="napr. dohodou alebo 30 €/hod">
+
+            <label>Lokalita <span>*</span></label>
+            <input type="text" name="location" placeholder="napr. Bratislava">
+
+            <label>Popis služby <span>*</span></label>
+            <textarea name="description" placeholder="Opíšte službu, ktorú ponúkate..."></textarea>
+
+            <label>Fotky</label>
+            <input type="file" name="photo">
+
+            <p class="required-note-bottom">
+                <span>*</span> povinný údaj
+            </p>
+
+            {% if session.get("user_id") %}
+                <button type="submit" class="register-btn">
+                    Pridať inzerát
+                </button>
+            {% else %}
+                <button type="submit" class="register-btn">
+                    Najprv sa prihláste
+                </button>
+            {% endif %}
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

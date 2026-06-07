@@ -1,0 +1,55 @@
+<div class="header-page">
+
+    <header class="header">
+
+        <div class="header-left">
+
+            <a href="{{ url_for('index') }}" class="logo">
+                <div class="logo-main">služby.sk</div>
+                <div class="logo-sub">Inzercia služieb</div>
+            </a>
+
+            <div class="category-menu">
+                <button class="category-btn">
+                    ☰ Kategórie
+                </button>
+
+                <div class="category-dropdown">
+                    <a href="{{ url_for('dom_a_byvanie') }}">Dom a bývanie</a>
+                    <a href="#">Doučovanie</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="menu">
+
+            {% if session.get("user_id") %}
+
+                <span>{{ session.get("user_name") }}</span>
+                <span>|</span>
+                <a href="{{ url_for('odhlasenie') }}">Odhlásiť</a>
+
+                <a href="{{ url_for('pridat_inzerat') }}" class="btn">
+                    Pridať inzerát
+                </a>
+
+            {% else %}
+
+                <a href="{{ url_for('prihlasenie') }}">Prihlásenie</a>
+                <span>|</span>
+                <a href="{{ url_for('registracia') }}">Registrácia</a>
+
+                <a href="{{ url_for('pridat_inzerat') }}" class="btn">
+                    Pridať inzerát
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </header>
+
+    <div class="line"></div>
+
+</div>
