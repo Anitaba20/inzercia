@@ -938,6 +938,21 @@ def pridat_recenzie(inzerat_id):
 
     return redirect(url_for("detail_inzeratu", inzerat_id=inzerat.id))
 
+@app.route("/podkategoria/<nazov>")
+def podkategoria(nazov):
+
+    inzeraty = Inzerat.query.filter_by(
+        podkategoria=nazov
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "inzeraty/podkategoria.html",
+        inzeraty=inzeraty,
+        nazov=nazov
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

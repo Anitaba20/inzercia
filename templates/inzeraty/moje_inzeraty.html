@@ -23,6 +23,13 @@
                         {{ inzerat.kategoria }}
                     </p>
 
+                    {% if inzerat.podkategoria %}
+                        <p>
+                            Podkategória:
+                            {{ inzerat.podkategoria }}
+                        </p>
+                    {% endif %}
+
                     <p>
                         Lokalita:
                         {{ inzerat.lokalita }}
