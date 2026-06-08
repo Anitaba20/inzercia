@@ -1,0 +1,100 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Sťahovanie a doprava{% endblock %}
+
+{% block content %}
+
+<div class="main-page">
+
+```
+<div class="category-page">
+
+    <aside class="side-filter">
+
+        <div class="subcategories">
+            <a href="#">Sťahovanie bytov</a>
+            <a href="#">Sťahovanie domov</a>
+            <a href="#">Vypratávanie</a>
+            <a href="#">Odvoz odpadu</a>
+            <a href="#">Preprava nábytku</a>
+            <a href="#">Kuriérske služby</a>
+            <a href="#">Prevoz osôb</a>
+            <a href="#">Dovoz tovaru</a>
+        </div>
+
+        <div class="filter-box">
+            <h3>Filter</h3>
+
+            <label>Cena od</label>
+            <input type="text" placeholder="0 €">
+
+            <label>Cena do</label>
+            <input type="text" placeholder="napr. 500 €">
+
+            <label>Dátum pridania</label>
+            <select>
+                <option>Najnovšie</option>
+                <option>Dnes</option>
+                <option>Posledných 7 dní</option>
+                <option>Posledných 30 dní</option>
+            </select>
+        </div>
+
+    </aside>
+
+    <section class="ads-list">
+
+        <h1>Sťahovanie a doprava</h1>
+
+        {% if inzeraty %}
+
+            {% for inzerat in inzeraty %}
+
+                <div class="ad-item">
+                    <div class="ad-icon">🚚</div>
+
+                    <div class="ad-content">
+
+                        <a href="{{ url_for('detail_inzeratu', inzerat_id=inzerat.id) }}" class="ad-title">
+                            {{ inzerat.nazov }}
+                        </a>
+
+                        <p>
+                            {{ inzerat.popis[:120] }}{% if inzerat.popis|length > 120 %}...{% endif %}
+                        </p>
+
+                        <strong>
+                            Cena:
+                            {% if inzerat.cena %}
+                                {{ inzerat.cena }}
+                            {% else %}
+                                dohodou
+                            {% endif %}
+                        </strong>
+
+                        <span>📍 {{ inzerat.lokalita }}</span>
+
+                        <span>
+                            Pridané:
+                            {{ inzerat.datum_pridania.strftime("%d. %m. %Y") }}
+                        </span>
+
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>Zatiaľ tu nie sú žiadne inzeráty.</p>
+
+        {% endif %}
+
+    </section>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

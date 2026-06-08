@@ -108,7 +108,7 @@ body{
     position:absolute;
     top:50px;
     left:0;
-    width:230px;
+    width:380px;
     background:white;
     border:1px solid #ddd;
     border-radius:8px;
@@ -117,11 +117,25 @@ body{
 }
 
 .category-dropdown a{
-    display:block;
+    display:flex;
+    align-items:center;
+    gap:12px;
     padding:14px 18px;
     color:#222;
     text-decoration:none;
     border-bottom:1px solid #eee;
+    font-size:15px;
+}
+
+.category-dropdown a:last-child{
+    border-bottom:none;
+}
+
+.category-dropdown i{
+    width:20px;
+    text-align:center;
+    font-size:16px;
+    color:#444;
 }
 
 .category-dropdown a:hover{
@@ -410,7 +424,7 @@ body{
 }
 
 
-/******** DOM A BYVANIE ********/
+/******** REMESELNÉ A STAVEBNÉ PRÁCE ********/
 
 .category-page{
     display:flex;
@@ -531,10 +545,21 @@ body{
     margin-bottom:10px;
 }
 
-.detail-location,
-.detail-date{
+.detail-location{
     color:#666;
     margin-bottom:8px;
+}
+
+.detail-category{
+    color:#333;
+    margin-top:10px;
+    margin-bottom:8px;
+}
+
+.detail-date{
+    color:#666;
+    margin-top:10px;
+    margin-bottom:25px;
 }
 
 .detail-main h2{
@@ -547,12 +572,21 @@ body{
     margin-bottom:25px;
 }
 
+.no-rating{
+    margin-bottom:25px;
+}
+
 .detail-main h3{
     margin:25px 0 10px;
 }
 
+.contact-section{
+    margin-top:20px;
+}
+
 .contact-btn,
 .question-btn{
+    display:block;
     width:100%;
     padding:14px;
     margin-top:15px;
@@ -561,6 +595,8 @@ body{
     font-size:17px;
     font-weight:bold;
     cursor:pointer;
+    text-align:center;
+    text-decoration:none;
 }
 
 .contact-btn{
@@ -610,6 +646,15 @@ body{
     margin-bottom:8px;
 }
 
+.other-ad{
+    padding:8px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.other-ad:last-child{
+    border-bottom:none;
+}
+
 
 /******** PRIDAT INZERAT ********/
 
@@ -657,59 +702,5 @@ body{
     resize:vertical;
     font-family:Arial,sans-serif;
 }
-
-/*Kontavať poskytovateľa*/
-Teraz by som nerobila všetko naraz. Najlogickejšie poradie:
-
-1. **Upraviť tlačidlo Kontaktovať poskytovateľa**, lebo teraz vyzerá ako obyčajný link a je zle umiestnené.
-2. **Recenzie zatiaľ nechať ako prázdnu sekciu**, len krajšie zobraziť.
-3. **Hodnotenie 4.8 zatiaľ odstrániť alebo dať ako “Zatiaľ bez hodnotenia”**, lebo teraz je falošné.
-
-Teraz spravíme prvý krok.
-
-V `detail_inzeratu.html` nájdi toto:
-
-```html
-<a href="{{ url_for('kontaktovat_poskytovatela', inzerat_id=inzerat.id) }}" class="contact-btn">
-    Kontaktovať poskytovateľa
-</a>
-```
-
-nahraď týmto:
-
-```html
-<div class="contact-section">
-    <a href="{{ url_for('kontaktovat_poskytovatela', inzerat_id=inzerat.id) }}" class="contact-btn">
-        Kontaktovať poskytovateľa
-    </a>
-</div>
-```
-
-A do `style.css` pridaj alebo uprav toto:
-
-```css
-.contact-section{
-    margin:25px 0;
-}
-
-.contact-btn{
-    display:block;
-    width:100%;
-    background:#2563eb;
-    color:white;
-    text-align:center;
-    padding:14px;
-    border-radius:6px;
-    font-size:17px;
-    font-weight:bold;
-    text-decoration:none;
-}
-
-.contact-btn:hover{
-    background:#1d4ed8;
-}
-```
-
-Tlačidlo bude pekne široké, zarovnané a nebude vyzerať ako rozbitý link.
 
 

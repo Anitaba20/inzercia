@@ -26,6 +26,10 @@
                 📍 {{ inzerat.lokalita }}
             </p>
 
+            <p class="detail-category">
+                Kategória: {{ inzerat.kategoria }}
+            </p>
+
             <p class="detail-date">
                 Pridané:
                 {{ inzerat.datum_pridania.strftime("%d. %m. %Y") }}
@@ -42,7 +46,7 @@
             </h2>
 
             <p class="no-rating">
-                Zatiaľ bez hodnotenia
+                ⭐ Zatiaľ bez hodnotenia
             </p>
 
             <h3>Popis služby</h3>
@@ -55,9 +59,7 @@
 
                 <a href="{{ url_for('kontaktovat_poskytovatela', inzerat_id=inzerat.id) }}"
                    class="contact-btn">
-
                     Kontaktovať poskytovateľa
-
                 </a>
 
             </div>
@@ -88,7 +90,7 @@
                 </p>
             {% endif %}
 
-            <p>Zatiaľ bez hodnotenia</p>
+            <p>⭐ Zatiaľ bez hodnotenia</p>
 
             <p>
                 Počet inzerátov:
@@ -101,11 +103,11 @@
 
                 {% for iny_inzerat in dalsie_inzeraty %}
 
-                    <a href="{{ url_for('detail_inzeratu', inzerat_id=iny_inzerat.id) }}">
-                        {{ iny_inzerat.nazov }}
-                    </a>
-
-                    <br>
+                    <div class="other-ad">
+                        <a href="{{ url_for('detail_inzeratu', inzerat_id=iny_inzerat.id) }}">
+                            {{ iny_inzerat.nazov }}
+                        </a>
+                    </div>
 
                 {% endfor %}
 

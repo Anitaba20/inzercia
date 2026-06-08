@@ -129,14 +129,142 @@ def index():
     return render_template("stranky/index.html")
 
 
-@app.route("/dom-a-byvanie")
-def dom_a_byvanie():
-    inzeraty = Inzerat.query.filter_by(kategoria="Dom a bývanie").order_by(
+@app.route("/remeselne-a-stavebne-prace")
+def remeselne_stavebne_prace():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Remeselné a stavebné práce"
+    ).order_by(
         Inzerat.datum_pridania.desc()
     ).all()
 
     return render_template(
-        "kategorie/dom_a_byvanie.html",
+        "kategorie/remeselne_stavebne_prace.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/stahovanie-a-doprava")
+def stahovanie_doprava():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Sťahovanie a doprava"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/stahovanie_doprava.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/pomoc-v-domacnosti")
+def pomoc_v_domacnosti():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Pomoc v domácnosti"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/pomoc_v_domacnosti.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/krasa-a-starostlivost")
+def krasa_starostlivost():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Krása a starostlivosť"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/krasa_starostlivost.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/doucovanie-a-vzdelavanie")
+def doucovanie_vzdelavanie():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Doučovanie a vzdelávanie"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/doucovanie_vzdelavanie.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/preklady")
+def preklady():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Preklady"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/preklady.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/it-a-online-sluzby")
+def it_online_sluzby():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="IT a online služby"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/it_online_sluzby.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/foto-video-a-podujatia")
+def foto_video_podujatia():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Foto, video a podujatia"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/foto_video_podujatia.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/oslavy-a-catering")
+def oslavy_catering():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Oslavy a catering"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/oslavy_catering.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/ostatne")
+def ostatne():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Ostatné"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/ostatne.html",
         inzeraty=inzeraty
     )
 
