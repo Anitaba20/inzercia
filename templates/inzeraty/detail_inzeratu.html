@@ -92,10 +92,10 @@
                             <option value="1">⭐ 1</option>
                         </select>
 
-                        <label>Komentár</label>
+                        <label>Komentár k hodnoteniu</label>
 
                         <textarea name="komentar"
-                                  placeholder="Napíšte krátku recenziu..."></textarea>
+                                  placeholder="Napíšte krátky komentár k hodnoteniu..."></textarea>
 
                         <button type="submit" class="register-btn">
                             Odoslať hodnotenie
@@ -109,7 +109,7 @@
 
             <section class="reviews">
 
-                <h3>Recenzie</h3>
+                <h3>Hodnotenia</h3>
 
                 {% if hodnotenia %}
 
@@ -142,7 +142,69 @@
                 {% else %}
 
                     <div class="review">
-                        <p>Zatiaľ bez recenzií.</p>
+                        <p>Zatiaľ bez hodnotení.</p>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+            <section class="discussion-section">
+
+                <h3>Diskusia</h3>
+
+                {% if session.get("user_id") %}
+
+                    <form method="POST"
+                          action="{{ url_for('pridat_recenzie', inzerat_id=inzerat.id) }}"
+                          class="discussion-form">
+
+                        <label>Príspevok do diskusie</label>
+
+                        <textarea name="text"
+                                  placeholder="Napíšte otázku, odpoveď alebo skúsenosť..."
+                                  required></textarea>
+
+                        <button type="submit" class="register-btn">
+                            Pridať príspevok
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <p>
+                        Pre pridanie príspevku do diskusie sa musíte prihlásiť.
+                    </p>
+
+                {% endif %}
+
+                {% if recenzie %}
+
+                    {% for recenzia, autor in recenzie %}
+
+                        <div class="review">
+
+                            <p>
+                                <strong>{{ autor.username }}</strong>
+                            </p>
+
+                            <p>
+                                {{ recenzia.text }}
+                            </p>
+
+                            <p>
+                                {{ recenzia.datum.strftime("%d. %m. %Y") }}
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="review">
+                        <p>Zatiaľ bez príspevkov v diskusii.</p>
                     </div>
 
                 {% endif %}

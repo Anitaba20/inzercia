@@ -120,6 +120,33 @@ class Hodnotenie(db.Model):
         nullable=False
     )
 
+class Recenzia(db.Model):
+    __tablename__ = "recenzie"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    text = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    datum = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    inzerat_id = db.Column(
+        db.Integer,
+        db.ForeignKey("inzeraty.id"),
+        nullable=False
+    )
+
+    autor_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
 
 with app.app_context():
     db.create_all()
@@ -856,6 +883,28 @@ def pridat_hodnotenie(inzerat_id):
         )
 
         db.session.add(nove_hodnotenie)
+        db.session.commit()
+
+    return redirect(url_for("detail_inzeratu", inzerat_id=inzerat.id))
+
+@app.route("/pridat-recenzie/<int:inzerat_id>", methods=["POST"])
+def pridat_recenzie(inzerat_id):
+
+    if not session.get("user_id"):
+        return redirect(url_for("prihlasenie"))
+
+    inzerat = Inzerat.query.get_or_404(inzerat_id)
+
+    text = request.form.get("text", "").strip()
+
+    if text:
+        nova_recenzia = Recenzia(
+            text=text,
+            inzerat_id=inzerat.id,
+            autor_user_id=session["user_id"]
+        )
+
+        db.session.add(nova_recenzia)
         db.session.commit()
 
     return redirect(url_for("detail_inzeratu", inzerat_id=inzerat.id))
