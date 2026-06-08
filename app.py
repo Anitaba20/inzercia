@@ -823,6 +823,7 @@ def upravit_inzerat(inzerat_id):
     if request.method == "POST":
         nazov = request.form.get("title", "").strip()
         kategoria = request.form.get("category", "").strip()
+        podkategoria = request.form.get("subcategory", "").strip()
         cena = request.form.get("price", "").strip()
         lokalita = request.form.get("location", "").strip()
         popis = request.form.get("description", "").strip()
@@ -868,6 +869,7 @@ def upravit_inzerat(inzerat_id):
             if not chyba:
                 inzerat.nazov = nazov
                 inzerat.kategoria = kategoria
+                inzerat.podkategoria = podkategoria
                 inzerat.cena = cena
                 inzerat.lokalita = lokalita
                 inzerat.popis = popis
