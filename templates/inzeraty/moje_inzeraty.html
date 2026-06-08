@@ -1,0 +1,74 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Moje inzeráty{% endblock %}
+
+{% block content %}
+
+<div class="main-page">
+
+    <div class="my-ads-page">
+
+        <h1>Moje inzeráty</h1>
+
+        {% if inzeraty %}
+
+            {% for inzerat in inzeraty %}
+
+                <div class="my-ad-card">
+
+                    <h3>{{ inzerat.nazov }}</h3>
+
+                    <p>
+                        Kategória:
+                        {{ inzerat.kategoria }}
+                    </p>
+
+                    <p>
+                        Lokalita:
+                        {{ inzerat.lokalita }}
+                    </p>
+
+                    <p>
+                        Pridané:
+                        {{ inzerat.datum_pridania.strftime("%d. %m. %Y") }}
+                    </p>
+
+                    <div class="my-ad-actions">
+
+                        <a href="{{ url_for('detail_inzeratu', inzerat_id=inzerat.id) }}">
+                            Detail
+                        </a>
+
+                        <a href="{{ url_for('upravit_inzerat', inzerat_id=inzerat.id) }}">
+                            Upraviť
+                        </a>
+
+                        <form method="POST"
+                              action="{{ url_for('zmazat_inzerat', inzerat_id=inzerat.id) }}"
+                              onsubmit="return confirm('Naozaj chcete zmazať tento inzerát?');">
+
+                            <button type="submit" class="delete-link">
+                                Zmazať
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                Zatiaľ nemáte žiadne inzeráty.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

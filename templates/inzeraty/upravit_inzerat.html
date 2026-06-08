@@ -1,0 +1,122 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Upraviť inzerát{% endblock %}
+
+{% block content %}
+
+<div class="main-page">
+
+    <div class="add-ad-page">
+
+        <h1>Upraviť inzerát</h1>
+
+        <form class="add-ad-form"
+              method="POST"
+              enctype="multipart/form-data">
+
+            {% if chyba %}
+                <p class="error-message">{{ chyba }}</p>
+            {% endif %}
+
+            <label>Názov služby <span>*</span></label>
+            <input type="text"
+                   name="title"
+                   value="{{ inzerat.nazov }}">
+
+            <label>Kategória <span>*</span></label>
+            <select name="category">
+
+                <option {% if inzerat.kategoria == "Remeselné a stavebné práce" %}selected{% endif %}>
+                    Remeselné a stavebné práce
+                </option>
+
+                <option {% if inzerat.kategoria == "Sťahovanie a doprava" %}selected{% endif %}>
+                    Sťahovanie a doprava
+                </option>
+
+                <option {% if inzerat.kategoria == "Pomoc v domácnosti" %}selected{% endif %}>
+                    Pomoc v domácnosti
+                </option>
+
+                <option {% if inzerat.kategoria == "Krása a starostlivosť" %}selected{% endif %}>
+                    Krása a starostlivosť
+                </option>
+
+                <option {% if inzerat.kategoria == "Doučovanie a vzdelávanie" %}selected{% endif %}>
+                    Doučovanie a vzdelávanie
+                </option>
+
+                <option {% if inzerat.kategoria == "Preklady" %}selected{% endif %}>
+                    Preklady
+                </option>
+
+                <option {% if inzerat.kategoria == "IT a online služby" %}selected{% endif %}>
+                    IT a online služby
+                </option>
+
+                <option {% if inzerat.kategoria == "Foto, video a podujatia" %}selected{% endif %}>
+                    Foto, video a podujatia
+                </option>
+
+                <option {% if inzerat.kategoria == "Oslavy a catering" %}selected{% endif %}>
+                    Oslavy a catering
+                </option>
+
+                <option {% if inzerat.kategoria == "Ostatné" %}selected{% endif %}>
+                    Ostatné
+                </option>
+
+            </select>
+
+            <label>Cena</label>
+            <input type="text"
+                   name="price"
+                   value="{{ inzerat.cena }}">
+
+            <label>Lokalita <span>*</span></label>
+            <input type="text"
+                   name="location"
+                   value="{{ inzerat.lokalita }}">
+
+            <label>Popis služby <span>*</span></label>
+            <textarea name="description">{{ inzerat.popis }}</textarea>
+
+            <label>Fotka 1</label>
+            {% if inzerat.obrazok %}
+                <p>Aktuálna fotka: {{ inzerat.obrazok }}</p>
+            {% endif %}
+            <input type="file"
+                   name="photo"
+                   accept=".jpg,.jpeg,.png">
+
+            <label>Fotka 2</label>
+            {% if inzerat.obrazok_2 %}
+                <p>Aktuálna fotka: {{ inzerat.obrazok_2 }}</p>
+            {% endif %}
+            <input type="file"
+                   name="photo2"
+                   accept=".jpg,.jpeg,.png">
+
+            <label>Fotka 3</label>
+            {% if inzerat.obrazok_3 %}
+                <p>Aktuálna fotka: {{ inzerat.obrazok_3 }}</p>
+            {% endif %}
+            <input type="file"
+                   name="photo3"
+                   accept=".jpg,.jpeg,.png">
+
+            <p class="required-note-bottom">
+                Maximálne 3 obrázky (JPG, JPEG, PNG). Ak nevyberiete novú fotku, pôvodná zostane.
+            </p>
+
+            <button type="submit" class="register-btn">
+                Uložiť zmeny
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

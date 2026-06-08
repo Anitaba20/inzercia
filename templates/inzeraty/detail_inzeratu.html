@@ -45,9 +45,16 @@
                 {% endif %}
             </h2>
 
-            <p class="no-rating">
-                ⭐ Zatiaľ bez hodnotenia
-            </p>
+            {% if priemer_hodnotenia %}
+                <p class="detail-rating">
+                    ⭐ {{ priemer_hodnotenia }} / 5
+                    ({{ pocet_hodnoteni }} hodnotení)
+                </p>
+            {% else %}
+                <p class="no-rating">
+                    ⭐ Zatiaľ bez hodnotenia
+                </p>
+            {% endif %}
 
             <h3>Popis služby</h3>
 
@@ -64,15 +71,121 @@
 
             </div>
 
+            {% if session.get("user_id") and session.get("user_id") != inzerat.user_id %}
+
+                <section class="rating-form-section">
+
+                    <h3>Pridať hodnotenie</h3>
+
+                    <form method="POST"
+                          action="{{ url_for('pridat_hodnotenie', inzerat_id=inzerat.id) }}"
+                          class="rating-form">
+
+                        <label>Hodnotenie</label>
+
+                        <select name="hodnotenie" required>
+                            <option value="">Vyberte hodnotenie</option>
+                            <option value="5">⭐⭐⭐⭐⭐ 5</option>
+                            <option value="4">⭐⭐⭐⭐ 4</option>
+                            <option value="3">⭐⭐⭐ 3</option>
+                            <option value="2">⭐⭐ 2</option>
+                            <option value="1">⭐ 1</option>
+                        </select>
+
+                        <label>Komentár</label>
+
+                        <textarea name="komentar"
+                                  placeholder="Napíšte krátku recenziu..."></textarea>
+
+                        <button type="submit" class="register-btn">
+                            Odoslať hodnotenie
+                        </button>
+
+                    </form>
+
+                </section>
+
+            {% endif %}
+
             <section class="reviews">
 
                 <h3>Recenzie</h3>
 
-                <div class="review">
-                    <p>Zatiaľ bez recenzií.</p>
-                </div>
+                {% if hodnotenia %}
+
+                    {% for hodnotenie, autor in hodnotenia %}
+
+                        <div class="review">
+
+                            <p>
+                                <strong>{{ autor.username }}</strong>
+                            </p>
+
+                            <p>
+                                ⭐ {{ hodnotenie.hodnotenie }} / 5
+                            </p>
+
+                            {% if hodnotenie.komentar %}
+                                <p>
+                                    {{ hodnotenie.komentar }}
+                                </p>
+                            {% endif %}
+
+                            <p>
+                                {{ hodnotenie.datum.strftime("%d. %m. %Y") }}
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="review">
+                        <p>Zatiaľ bez recenzií.</p>
+                    </div>
+
+                {% endif %}
 
             </section>
+
+            {% if inzerat.obrazok or inzerat.obrazok_2 or inzerat.obrazok_3 %}
+
+                <section class="detail-photo-section">
+
+                    <h3>Fotky inzerátu</h3>
+
+                    <div class="detail-gallery">
+
+                        {% if inzerat.obrazok %}
+                            <div class="detail-image-box">
+                                <img class="detail-image"
+                                     src="{{ url_for('static', filename='uploads/' + inzerat.obrazok) }}"
+                                     alt="{{ inzerat.nazov }}">
+                            </div>
+                        {% endif %}
+
+                        {% if inzerat.obrazok_2 %}
+                            <div class="detail-image-box">
+                                <img class="detail-image"
+                                     src="{{ url_for('static', filename='uploads/' + inzerat.obrazok_2) }}"
+                                     alt="{{ inzerat.nazov }}">
+                            </div>
+                        {% endif %}
+
+                        {% if inzerat.obrazok_3 %}
+                            <div class="detail-image-box">
+                                <img class="detail-image"
+                                     src="{{ url_for('static', filename='uploads/' + inzerat.obrazok_3) }}"
+                                     alt="{{ inzerat.nazov }}">
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+            {% endif %}
 
         </section>
 
@@ -81,16 +194,27 @@
             <h3>Poskytovateľ</h3>
 
             {% if poskytovatel %}
+
                 <p>
                     <strong>{{ poskytovatel.username }}</strong>
                 </p>
+
             {% else %}
+
                 <p>
                     <strong>Neznámy používateľ</strong>
                 </p>
+
             {% endif %}
 
-            <p>⭐ Zatiaľ bez hodnotenia</p>
+            {% if priemer_hodnotenia %}
+                <p>
+                    ⭐ {{ priemer_hodnotenia }} / 5
+                    ({{ pocet_hodnoteni }} hodnotení)
+                </p>
+            {% else %}
+                <p>⭐ Zatiaľ bez hodnotenia</p>
+            {% endif %}
 
             <p>
                 Počet inzerátov:
@@ -104,9 +228,11 @@
                 {% for iny_inzerat in dalsie_inzeraty %}
 
                     <div class="other-ad">
+
                         <a href="{{ url_for('detail_inzeratu', inzerat_id=iny_inzerat.id) }}">
                             {{ iny_inzerat.nazov }}
                         </a>
+
                     </div>
 
                 {% endfor %}

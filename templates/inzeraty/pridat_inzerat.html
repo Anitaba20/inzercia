@@ -10,7 +10,9 @@
 
         <h1>Pridať inzerát</h1>
 
-        <form class="add-ad-form" method="POST">
+        <form class="add-ad-form"
+              method="POST"
+              enctype="multipart/form-data">
 
             {% if not session.get("user_id") %}
                 <p class="info-message">
@@ -27,25 +29,67 @@
             {% endif %}
 
             <label>Názov služby <span>*</span></label>
-            <input type="text" name="title" placeholder="napr. Rekonštrukcie bytov">
+            <input type="text"
+                   name="title"
+                   placeholder="napr. Sťahovanie bytu">
 
             <label>Kategória <span>*</span></label>
             <select name="category">
-                <option>Dom a bývanie</option>
-                <option>Doučovanie</option>
+                <option value="">Vyberte kategóriu</option>
+                <option value="Remeselné a stavebné práce">Remeselné a stavebné práce</option>
+                <option value="Sťahovanie a doprava">Sťahovanie a doprava</option>
+                <option value="Pomoc v domácnosti">Pomoc v domácnosti</option>
+                <option value="Krása a starostlivosť">Krása a starostlivosť</option>
+                <option value="Doučovanie a vzdelávanie">Doučovanie a vzdelávanie</option>
+                <option value="Preklady">Preklady</option>
+                <option value="IT a online služby">IT a online služby</option>
+                <option value="Foto, video a podujatia">Foto, video a podujatia</option>
+                <option value="Oslavy a catering">Oslavy a catering</option>
+                <option value="Ostatné">Ostatné</option>
             </select>
 
             <label>Cena</label>
-            <input type="text" name="price" placeholder="napr. dohodou alebo 30 €/hod">
+            <input type="text"
+                   name="price"
+                   placeholder="napr. dohodou alebo 30 €/hod">
 
             <label>Lokalita <span>*</span></label>
-            <input type="text" name="location" placeholder="napr. Bratislava">
+            <input type="text"
+                   name="location"
+                   placeholder="napr. Bratislava">
 
             <label>Popis služby <span>*</span></label>
-            <textarea name="description" placeholder="Opíšte službu, ktorú ponúkate..."></textarea>
+            <textarea name="description"
+                      placeholder="Opíšte službu, ktorú ponúkate..."></textarea>
 
-            <label>Fotky</label>
-            <input type="file" name="photo">
+            <label>Fotka 1</label>
+            <input type="file"
+                   name="photo"
+                   accept=".jpg,.jpeg,.png">
+
+            <label>Fotka 2</label>
+            <input type="file"
+                   name="photo2"
+                   accept=".jpg,.jpeg,.png">
+
+            <label>Fotka 3</label>
+            <input type="file"
+                   name="photo3"
+                   accept=".jpg,.jpeg,.png">
+
+            <div class="photo-info-box">
+
+                <strong>Odporúčania pre fotografie:</strong>
+
+                <ul>
+                    <li>Maximálne 3 obrázky</li>
+                    <li>Povolené formáty: JPG, JPEG, PNG</li>
+                    <li>Odporúčaný rozmer: 1200 × 800 px</li>
+                    <li>Najlepšie vyzerajú vodorovné fotografie</li>
+                    <li>Používajte ostré a kvalitné fotografie</li>
+                </ul>
+
+            </div>
 
             <p class="required-note-bottom">
                 <span>*</span> povinný údaj

@@ -4,6 +4,7 @@ from flask_mail import Mail, Message
 from flask_dance.contrib.google import make_google_blueprint, google
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta, timezone
 import jwt
 import re
@@ -19,6 +20,20 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 300
+}
+
+app.config["UPLOAD_FOLDER"] = "static/uploads"
+
+ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png"}
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
@@ -65,9 +80,41 @@ class Inzerat(db.Model):
     cena = db.Column(db.String(100))
     lokalita = db.Column(db.String(100), nullable=False)
     popis = db.Column(db.Text, nullable=False)
+
+    obrazok = db.Column(db.String(255))
+    obrazok_2 = db.Column(db.String(255))
+    obrazok_3 = db.Column(db.String(255))
+
     datum_pridania = db.Column(db.DateTime, default=datetime.utcnow)
 
     user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
+
+class Hodnotenie(db.Model):
+    __tablename__ = "hodnotenia"
+
+    id = db.Column(db.Integer, primary_key=True)
+    hodnotenie = db.Column(db.Integer, nullable=False)
+    komentar = db.Column(db.Text)
+    datum = db.Column(db.DateTime, default=datetime.utcnow)
+
+    inzerat_id = db.Column(
+        db.Integer,
+        db.ForeignKey("inzeraty.id"),
+        nullable=False
+    )
+
+    hodnoteny_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
+    autor_user_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id"),
         nullable=False
@@ -122,6 +169,24 @@ služby.sk
 """
 
     mail.send(sprava)
+
+
+@app.context_processor
+def pocet_inzeratov_v_kategoriach():
+    kategorie_pocty = {
+        "remeselne": Inzerat.query.filter_by(kategoria="Remeselné a stavebné práce").count(),
+        "stahovanie": Inzerat.query.filter_by(kategoria="Sťahovanie a doprava").count(),
+        "domacnost": Inzerat.query.filter_by(kategoria="Pomoc v domácnosti").count(),
+        "krasa": Inzerat.query.filter_by(kategoria="Krása a starostlivosť").count(),
+        "doucovanie": Inzerat.query.filter_by(kategoria="Doučovanie a vzdelávanie").count(),
+        "preklady": Inzerat.query.filter_by(kategoria="Preklady").count(),
+        "it": Inzerat.query.filter_by(kategoria="IT a online služby").count(),
+        "foto": Inzerat.query.filter_by(kategoria="Foto, video a podujatia").count(),
+        "oslavy": Inzerat.query.filter_by(kategoria="Oslavy a catering").count(),
+        "ostatne": Inzerat.query.filter_by(kategoria="Ostatné").count()
+    }
+
+    return dict(kategorie_pocty=kategorie_pocty)
 
 
 @app.route("/")
@@ -284,12 +349,37 @@ def detail_inzeratu(inzerat_id):
         Inzerat.id != inzerat.id
     ).limit(3).all()
 
+    hodnotenia = db.session.query(
+        Hodnotenie,
+        User
+    ).join(
+        User,
+        Hodnotenie.autor_user_id == User.id
+    ).filter(
+        Hodnotenie.inzerat_id == inzerat.id
+    ).order_by(
+        Hodnotenie.datum.desc()
+    ).all()
+
+    pocet_hodnoteni = len(hodnotenia)
+
+    if pocet_hodnoteni > 0:
+        priemer_hodnotenia = round(
+            sum(h[0].hodnotenie for h in hodnotenia) / pocet_hodnoteni,
+            1
+        )
+    else:
+        priemer_hodnotenia = None
+
     return render_template(
         "inzeraty/detail_inzeratu.html",
         inzerat=inzerat,
         poskytovatel=poskytovatel,
         pocet_inzeratov=pocet_inzeratov,
-        dalsie_inzeraty=dalsie_inzeraty
+        dalsie_inzeraty=dalsie_inzeraty,
+        hodnotenia=hodnotenia,
+        priemer_hodnotenia=priemer_hodnotenia,
+        pocet_hodnoteni=pocet_hodnoteni
     )
 
 
@@ -372,23 +462,62 @@ def pridat_inzerat():
             lokalita = request.form.get("location", "").strip()
             popis = request.form.get("description", "").strip()
 
+            obrazok_nazov = None
+            obrazok_2_nazov = None
+            obrazok_3_nazov = None
+
+            subor_1 = request.files.get("photo")
+            subor_2 = request.files.get("photo2")
+            subor_3 = request.files.get("photo3")
+
             if not nazov or not kategoria or not lokalita or not popis:
                 chyba = "Vyplňte všetky povinné polia."
 
             else:
-                novy_inzerat = Inzerat(
-                    nazov=nazov,
-                    kategoria=kategoria,
-                    cena=cena,
-                    lokalita=lokalita,
-                    popis=popis,
-                    user_id=session["user_id"]
-                )
+                if subor_1 and subor_1.filename != "":
+                    if allowed_file(subor_1.filename):
+                        povodny_nazov = secure_filename(subor_1.filename)
+                        obrazok_nazov = f"{session['user_id']}_1_{povodny_nazov}"
+                        cesta = os.path.join(app.config["UPLOAD_FOLDER"], obrazok_nazov)
+                        subor_1.save(cesta)
+                    else:
+                        chyba = "Povolené sú iba obrázky JPG, JPEG alebo PNG."
 
-                db.session.add(novy_inzerat)
-                db.session.commit()
+                if not chyba and subor_2 and subor_2.filename != "":
+                    if allowed_file(subor_2.filename):
+                        povodny_nazov = secure_filename(subor_2.filename)
+                        obrazok_2_nazov = f"{session['user_id']}_2_{povodny_nazov}"
+                        cesta = os.path.join(app.config["UPLOAD_FOLDER"], obrazok_2_nazov)
+                        subor_2.save(cesta)
+                    else:
+                        chyba = "Povolené sú iba obrázky JPG, JPEG alebo PNG."
 
-                uspech = "Inzerát bol úspešne pridaný."
+                if not chyba and subor_3 and subor_3.filename != "":
+                    if allowed_file(subor_3.filename):
+                        povodny_nazov = secure_filename(subor_3.filename)
+                        obrazok_3_nazov = f"{session['user_id']}_3_{povodny_nazov}"
+                        cesta = os.path.join(app.config["UPLOAD_FOLDER"], obrazok_3_nazov)
+                        subor_3.save(cesta)
+                    else:
+                        chyba = "Povolené sú iba obrázky JPG, JPEG alebo PNG."
+
+                if not chyba:
+                    novy_inzerat = Inzerat(
+                        nazov=nazov,
+                        kategoria=kategoria,
+                        cena=cena,
+                        lokalita=lokalita,
+                        popis=popis,
+                        obrazok=obrazok_nazov,
+                        obrazok_2=obrazok_2_nazov,
+                        obrazok_3=obrazok_3_nazov,
+                        user_id=session["user_id"]
+                    )
+
+                    db.session.add(novy_inzerat)
+                    db.session.commit()
+
+                    uspech = "Inzerát bol úspešne pridaný."
 
     return render_template(
         "inzeraty/pridat_inzerat.html",
@@ -584,6 +713,152 @@ def reset_hesla(token):
             ))
 
     return render_template("auth/reset_hesla.html", chyba=chyba, sprava=sprava)
+
+
+@app.route("/moje-inzeraty")
+def moje_inzeraty():
+    if not session.get("user_id"):
+        return redirect(url_for("prihlasenie"))
+
+    inzeraty = Inzerat.query.filter_by(
+        user_id=session["user_id"]
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "inzeraty/moje_inzeraty.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/zmazat-inzerat/<int:inzerat_id>", methods=["POST"])
+def zmazat_inzerat(inzerat_id):
+    if not session.get("user_id"):
+        return redirect(url_for("prihlasenie"))
+
+    inzerat = Inzerat.query.get_or_404(inzerat_id)
+
+    if inzerat.user_id != session["user_id"]:
+        return redirect(url_for("moje_inzeraty"))
+
+    Hodnotenie.query.filter_by(inzerat_id=inzerat.id).delete()
+
+    db.session.delete(inzerat)
+    db.session.commit()
+
+    return redirect(url_for("moje_inzeraty"))
+
+
+@app.route("/upravit-inzerat/<int:inzerat_id>", methods=["GET", "POST"])
+def upravit_inzerat(inzerat_id):
+    if not session.get("user_id"):
+        return redirect(url_for("prihlasenie"))
+
+    inzerat = Inzerat.query.get_or_404(inzerat_id)
+
+    if inzerat.user_id != session["user_id"]:
+        return redirect(url_for("moje_inzeraty"))
+
+    chyba = ""
+
+    if request.method == "POST":
+        nazov = request.form.get("title", "").strip()
+        kategoria = request.form.get("category", "").strip()
+        cena = request.form.get("price", "").strip()
+        lokalita = request.form.get("location", "").strip()
+        popis = request.form.get("description", "").strip()
+
+        subor_1 = request.files.get("photo")
+        subor_2 = request.files.get("photo2")
+        subor_3 = request.files.get("photo3")
+
+        if not nazov or not kategoria or not lokalita or not popis:
+            chyba = "Vyplňte všetky povinné polia."
+
+        else:
+            if subor_1 and subor_1.filename != "":
+                if allowed_file(subor_1.filename):
+                    povodny_nazov = secure_filename(subor_1.filename)
+                    obrazok_nazov = f"{session['user_id']}_1_{povodny_nazov}"
+                    cesta = os.path.join(app.config["UPLOAD_FOLDER"], obrazok_nazov)
+                    subor_1.save(cesta)
+                    inzerat.obrazok = obrazok_nazov
+                else:
+                    chyba = "Povolené sú iba obrázky JPG, JPEG alebo PNG."
+
+            if not chyba and subor_2 and subor_2.filename != "":
+                if allowed_file(subor_2.filename):
+                    povodny_nazov = secure_filename(subor_2.filename)
+                    obrazok_2_nazov = f"{session['user_id']}_2_{povodny_nazov}"
+                    cesta = os.path.join(app.config["UPLOAD_FOLDER"], obrazok_2_nazov)
+                    subor_2.save(cesta)
+                    inzerat.obrazok_2 = obrazok_2_nazov
+                else:
+                    chyba = "Povolené sú iba obrázky JPG, JPEG alebo PNG."
+
+            if not chyba and subor_3 and subor_3.filename != "":
+                if allowed_file(subor_3.filename):
+                    povodny_nazov = secure_filename(subor_3.filename)
+                    obrazok_3_nazov = f"{session['user_id']}_3_{povodny_nazov}"
+                    cesta = os.path.join(app.config["UPLOAD_FOLDER"], obrazok_3_nazov)
+                    subor_3.save(cesta)
+                    inzerat.obrazok_3 = obrazok_3_nazov
+                else:
+                    chyba = "Povolené sú iba obrázky JPG, JPEG alebo PNG."
+
+            if not chyba:
+                inzerat.nazov = nazov
+                inzerat.kategoria = kategoria
+                inzerat.cena = cena
+                inzerat.lokalita = lokalita
+                inzerat.popis = popis
+
+                db.session.commit()
+
+                return redirect(url_for("moje_inzeraty"))
+
+    return render_template(
+        "inzeraty/upravit_inzerat.html",
+        inzerat=inzerat,
+        chyba=chyba
+    )
+
+
+@app.route("/pridat-hodnotenie/<int:inzerat_id>", methods=["POST"])
+def pridat_hodnotenie(inzerat_id):
+    if not session.get("user_id"):
+        return redirect(url_for("prihlasenie"))
+
+    inzerat = Inzerat.query.get_or_404(inzerat_id)
+
+    if inzerat.user_id == session["user_id"]:
+        return redirect(url_for("detail_inzeratu", inzerat_id=inzerat.id))
+
+    existujuce_hodnotenie = Hodnotenie.query.filter_by(
+        inzerat_id=inzerat.id,
+        autor_user_id=session["user_id"]
+    ).first()
+
+    if existujuce_hodnotenie:
+        return redirect(url_for("detail_inzeratu", inzerat_id=inzerat.id))
+
+    hodnotenie = request.form.get("hodnotenie")
+    komentar = request.form.get("komentar", "").strip()
+
+    if hodnotenie:
+        nove_hodnotenie = Hodnotenie(
+            hodnotenie=int(hodnotenie),
+            komentar=komentar,
+            inzerat_id=inzerat.id,
+            hodnoteny_user_id=inzerat.user_id,
+            autor_user_id=session["user_id"]
+        )
+
+        db.session.add(nove_hodnotenie)
+        db.session.commit()
+
+    return redirect(url_for("detail_inzeratu", inzerat_id=inzerat.id))
 
 
 if __name__ == "__main__":
