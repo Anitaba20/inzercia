@@ -17,54 +17,131 @@
 
                 <div class="category-dropdown">
 
-                    <a href="{{ url_for('remeselne_stavebne_prace') }}">
-                        <i class="fa-solid fa-hammer"></i>
-                        Remeselné a stavebné práce ({{ kategorie_pocty.remeselne }})
-                    </a>
+                    <div class="category-item">
+                        <a href="{{ url_for('dom_a_byvanie') }}">
+                            <i class="fa-solid fa-house"></i>
+                            Dom a bývanie ({{ kategorie_pocty.dom_a_byvanie }})
+                            <span class="submenu-arrow">›</span>
+                        </a>
 
-                    <a href="{{ url_for('stahovanie_doprava') }}">
-                        <i class="fa-solid fa-truck"></i>
-                        Sťahovanie a doprava ({{ kategorie_pocty.stahovanie }})
-                    </a>
+                        <div class="submenu">
+                            <a href="#">Rekonštrukcie</a>
+                            <a href="#">Maľovanie a stierkovanie</a>
+                            <a href="#">Elektrikárske práce</a>
+                            <a href="#">Vodoinštalačné práce</a>
+                            <a href="#">Iné</a>
+                        </div>
+                    </div>
 
-                    <a href="{{ url_for('pomoc_v_domacnosti') }}">
-                        <i class="fa-solid fa-house"></i>
-                        Pomoc v domácnosti ({{ kategorie_pocty.domacnost }})
-                    </a>
+                    <div class="category-item">
+                        <a href="{{ url_for('zahrada_a_exterier') }}">
+                            <i class="fa-solid fa-seedling"></i>
+                            Záhrada a exteriér ({{ kategorie_pocty.zahrada }})
+                            <span class="submenu-arrow">›</span>
+                        </a>
 
-                    <a href="{{ url_for('krasa_starostlivost') }}">
-                        <i class="fa-solid fa-scissors"></i>
-                        Krása a starostlivosť ({{ kategorie_pocty.krasa }})
-                    </a>
+                        <div class="submenu">
+                            <a href="#">Kosenie trávnikov</a>
+                            <a href="#">Údržba záhrad</a>
+                            <a href="#">Živé ploty</a>
+                            <a href="#">Terénne úpravy</a>
+                            <a href="#">Iné</a>
+                        </div>
+                    </div>
 
-                    <a href="{{ url_for('doucovanie_vzdelavanie') }}">
+                    <div class="category-item">
+                        <a href="{{ url_for('stahovanie_doprava') }}">
+                            <i class="fa-solid fa-truck"></i>
+                            Sťahovanie a doprava ({{ kategorie_pocty.stahovanie }})
+                            <span class="submenu-arrow">›</span>
+                        </a>
+
+                        <div class="submenu">
+                            <a href="#">Sťahovanie</a>
+                            <a href="#">Preprava</a>
+                            <a href="#">Iné</a>
+                        </div>
+                    </div>
+
+                    <a href="{{ url_for('doucovanie') }}">
                         <i class="fa-solid fa-book-open"></i>
-                        Doučovanie a vzdelávanie ({{ kategorie_pocty.doucovanie }})
+                        Doučovanie ({{ kategorie_pocty.doucovanie }})
+                    </a>
+
+                    <div class="category-item">
+                        <a href="{{ url_for('online_sluzby') }}">
+                            <i class="fa-solid fa-desktop"></i>
+                            Online služby ({{ kategorie_pocty.online }})
+                            <span class="submenu-arrow">›</span>
+                        </a>
+
+                        <div class="submenu">
+                            <a href="#">Tvorba webstránok</a>
+                            <a href="#">Grafika a dizajn</a>
+                            <a href="#">SEO a marketing</a>
+                            <a href="#">Správa sociálnych sietí</a>
+                            <a href="#">Servis počítačov</a>
+                            <a href="#">Iné</a>
+                        </div>
+                    </div>
+
+                    <div class="category-item">
+                        <a href="{{ url_for('administrativa_a_financie') }}">
+                            <i class="fa-solid fa-file-invoice"></i>
+                            Administratíva a financie ({{ kategorie_pocty.administrativa }})
+                            <span class="submenu-arrow">›</span>
+                        </a>
+
+                        <div class="submenu">
+                            <a href="#">Účtovníctvo</a>
+                            <a href="#">Mzdy a personalistika</a>
+                            <a href="#">Administratívna pomoc</a>
+                            <a href="#">Daňové priznania</a>
+                            <a href="#">Iné</a>
+                        </div>
+                    </div>
+
+                    <div class="category-item">
+                        <a href="{{ url_for('starostlivost_a_pomoc') }}">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                            Starostlivosť a pomoc ({{ kategorie_pocty.starostlivost }})
+                            <span class="submenu-arrow">›</span>
+                        </a>
+
+                        <div class="submenu">
+                            <a href="#">Opatrovanie detí</a>
+                            <a href="#">Opatrovanie seniorov</a>
+                            <a href="#">Upratovanie</a>
+                            <a href="#">Pomoc v domácnosti</a>
+                            <a href="#">Iné</a>
+                        </div>
+                    </div>
+
+                    <div class="category-item">
+                        <a href="{{ url_for('krasa_a_zdravie') }}">
+                            <i class="fa-solid fa-scissors"></i>
+                            Krása a zdravie ({{ kategorie_pocty.krasa }})
+                            <span class="submenu-arrow">›</span>
+                        </a>
+
+                        <div class="submenu">
+                            <a href="#">Kaderníctvo</a>
+                            <a href="#">Kozmetika</a>
+                            <a href="#">Manikúra a pedikúra</a>
+                            <a href="#">Masáže</a>
+                            <a href="#">Tetovanie</a>
+                            <a href="#">Iné</a>
+                        </div>
+                    </div>
+
+                    <a href="{{ url_for('fotografovanie') }}">
+                        <i class="fa-solid fa-camera"></i>
+                        Fotografovanie ({{ kategorie_pocty.fotografovanie }})
                     </a>
 
                     <a href="{{ url_for('preklady') }}">
                         <i class="fa-solid fa-globe"></i>
                         Preklady ({{ kategorie_pocty.preklady }})
-                    </a>
-
-                    <a href="{{ url_for('it_online_sluzby') }}">
-                        <i class="fa-solid fa-desktop"></i>
-                        IT a online služby ({{ kategorie_pocty.it }})
-                    </a>
-
-                    <a href="{{ url_for('foto_video_podujatia') }}">
-                        <i class="fa-solid fa-camera"></i>
-                        Foto, video a podujatia ({{ kategorie_pocty.foto }})
-                    </a>
-
-                    <a href="{{ url_for('oslavy_catering') }}">
-                        <i class="fa-solid fa-cake-candles"></i>
-                        Oslavy a catering ({{ kategorie_pocty.oslavy }})
-                    </a>
-
-                    <a href="{{ url_for('ostatne') }}">
-                        <i class="fa-solid fa-ellipsis"></i>
-                        Ostatné ({{ kategorie_pocty.ostatne }})
                     </a>
 
                 </div>
@@ -78,7 +155,6 @@
             {% if session.get("user_id") %}
 
                 <span>{{ session.get("user_name") }}</span>
-
                 <span>|</span>
 
                 <a href="{{ url_for('moje_inzeraty') }}">

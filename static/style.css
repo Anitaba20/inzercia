@@ -799,23 +799,6 @@ body{
 
 /* Galéria obrázkov inzerátu */
 
-/*.detail-image-box{*/
-/*    width:300px;*/
-/*    height:220px;*/
-/*    border:1px solid #ddd;*/
-/*    border-radius:8px;*/
-/*    overflow:hidden;*/
-/*}*/
-
-/*.detail-image{*/
-/*    width:100%;*/
-/*    height:100%;*/
-/*    object-fit:contain;*/
-/*    display:block;*/
-/*}*/
-
-/* Galéria obrázkov inzerátu */
-
 .detail-gallery{
     display:flex;
     flex-wrap:wrap;
@@ -865,4 +848,65 @@ body{
 
 .photo-info-box li{
     margin-bottom:5px;
+}
+
+/* submenu */
+
+.category-item{
+    position:relative;
+}
+
+.category-item > a{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 18px;
+    color:#222;
+    text-decoration:none;
+    border-bottom:1px solid #eee;
+    font-size:15px;
+}
+
+.category-item > a:hover{
+    background:#f3f4f6;
+}
+
+.submenu-arrow{
+    margin-left:auto;
+    font-size:20px;
+    color:#777;
+}
+
+.submenu{
+    display:none;
+    position:absolute;
+    left:380px;
+    top:0;
+    width:280px;
+    background:white;
+    border:1px solid #ddd;
+    border-radius:8px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.12);
+    z-index:30;
+}
+
+.submenu a{
+    display:block;
+    padding:12px 15px;
+    color:#222;
+    text-decoration:none;
+    border-bottom:1px solid #eee;
+    font-size:15px;
+}
+
+.submenu a:last-child{
+    border-bottom:none;
+}
+
+.submenu a:hover{
+    background:#f3f4f6;
+}
+
+.category-item:hover .submenu{
+    display:block;
 }

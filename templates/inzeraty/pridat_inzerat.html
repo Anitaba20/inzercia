@@ -34,18 +34,23 @@
                    placeholder="napr. Sťahovanie bytu">
 
             <label>Kategória <span>*</span></label>
-            <select name="category">
+            <select name="category" id="category-select">
                 <option value="">Vyberte kategóriu</option>
-                <option value="Remeselné a stavebné práce">Remeselné a stavebné práce</option>
+                <option value="Dom a bývanie">Dom a bývanie</option>
+                <option value="Záhrada a exteriér">Záhrada a exteriér</option>
                 <option value="Sťahovanie a doprava">Sťahovanie a doprava</option>
-                <option value="Pomoc v domácnosti">Pomoc v domácnosti</option>
-                <option value="Krása a starostlivosť">Krása a starostlivosť</option>
-                <option value="Doučovanie a vzdelávanie">Doučovanie a vzdelávanie</option>
+                <option value="Doučovanie">Doučovanie</option>
+                <option value="Online služby">Online služby</option>
+                <option value="Administratíva a financie">Administratíva a financie</option>
+                <option value="Starostlivosť a pomoc">Starostlivosť a pomoc</option>
+                <option value="Krása a zdravie">Krása a zdravie</option>
+                <option value="Fotografovanie">Fotografovanie</option>
                 <option value="Preklady">Preklady</option>
-                <option value="IT a online služby">IT a online služby</option>
-                <option value="Foto, video a podujatia">Foto, video a podujatia</option>
-                <option value="Oslavy a catering">Oslavy a catering</option>
-                <option value="Ostatné">Ostatné</option>
+            </select>
+
+            <label>Podkategória</label>
+            <select name="subcategory" id="subcategory-select">
+                <option value="">Najprv vyberte kategóriu</option>
             </select>
 
             <label>Cena</label>
@@ -110,5 +115,92 @@
     </div>
 
 </div>
+
+<script>
+    const subcategories = {
+        "Dom a bývanie": [
+            "Rekonštrukcie",
+            "Maľovanie a stierkovanie",
+            "Elektrikárske práce",
+            "Vodoinštalačné práce",
+            "Iné"
+        ],
+        "Záhrada a exteriér": [
+            "Kosenie trávnikov",
+            "Údržba záhrad",
+            "Živé ploty",
+            "Terénne úpravy",
+            "Iné"
+        ],
+        "Sťahovanie a doprava": [
+            "Sťahovanie",
+            "Preprava",
+            "Iné"
+        ],
+        "Online služby": [
+            "Tvorba webstránok",
+            "Grafika a dizajn",
+            "SEO a marketing",
+            "Správa sociálnych sietí",
+            "Servis počítačov",
+            "Iné"
+        ],
+        "Administratíva a financie": [
+            "Účtovníctvo",
+            "Mzdy a personalistika",
+            "Administratívna pomoc",
+            "Daňové priznania",
+            "Iné"
+        ],
+        "Starostlivosť a pomoc": [
+            "Opatrovanie detí",
+            "Opatrovanie seniorov",
+            "Upratovanie",
+            "Pomoc v domácnosti",
+            "Iné"
+        ],
+        "Krása a zdravie": [
+            "Kaderníctvo",
+            "Kozmetika",
+            "Manikúra a pedikúra",
+            "Masáže",
+            "Tetovanie",
+            "Iné"
+        ],
+        "Doučovanie": [],
+        "Fotografovanie": [],
+        "Preklady": []
+    };
+
+    const categorySelect = document.getElementById("category-select");
+    const subcategorySelect = document.getElementById("subcategory-select");
+
+    categorySelect.addEventListener("change", function () {
+        const selectedCategory = this.value;
+        const options = subcategories[selectedCategory] || [];
+
+        subcategorySelect.innerHTML = "";
+
+        if (options.length === 0) {
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "Bez podkategórie";
+            subcategorySelect.appendChild(option);
+            return;
+        }
+
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Vyberte podkategóriu";
+        subcategorySelect.appendChild(defaultOption);
+
+        options.forEach(function (subcategory) {
+            const option = document.createElement("option");
+            option.value = subcategory;
+            option.textContent = subcategory;
+            subcategorySelect.appendChild(option);
+        });
+    });
+</script>
 
 {% endblock %}

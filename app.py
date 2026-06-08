@@ -77,6 +77,7 @@ class Inzerat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nazov = db.Column(db.String(200), nullable=False)
     kategoria = db.Column(db.String(100), nullable=False)
+    podkategoria = db.Column(db.String(100))
     cena = db.Column(db.String(100))
     lokalita = db.Column(db.String(100), nullable=False)
     popis = db.Column(db.Text, nullable=False)
@@ -97,10 +98,20 @@ class Inzerat(db.Model):
 class Hodnotenie(db.Model):
     __tablename__ = "hodnotenia"
 
-    id = db.Column(db.Integer, primary_key=True)
-    hodnotenie = db.Column(db.Integer, nullable=False)
-    komentar = db.Column(db.Text)
-    datum = db.Column(db.DateTime, default=datetime.utcnow)
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    hodnotenie = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+    datum = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
 
     inzerat_id = db.Column(
         db.Integer,
@@ -120,10 +131,14 @@ class Hodnotenie(db.Model):
         nullable=False
     )
 
+
 class Recenzia(db.Model):
     __tablename__ = "recenzie"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
 
     text = db.Column(
         db.Text,
@@ -201,16 +216,16 @@ služby.sk
 @app.context_processor
 def pocet_inzeratov_v_kategoriach():
     kategorie_pocty = {
-        "remeselne": Inzerat.query.filter_by(kategoria="Remeselné a stavebné práce").count(),
+        "dom_a_byvanie": Inzerat.query.filter_by(kategoria="Dom a bývanie").count(),
+        "zahrada": Inzerat.query.filter_by(kategoria="Záhrada a exteriér").count(),
         "stahovanie": Inzerat.query.filter_by(kategoria="Sťahovanie a doprava").count(),
-        "domacnost": Inzerat.query.filter_by(kategoria="Pomoc v domácnosti").count(),
-        "krasa": Inzerat.query.filter_by(kategoria="Krása a starostlivosť").count(),
-        "doucovanie": Inzerat.query.filter_by(kategoria="Doučovanie a vzdelávanie").count(),
-        "preklady": Inzerat.query.filter_by(kategoria="Preklady").count(),
-        "it": Inzerat.query.filter_by(kategoria="IT a online služby").count(),
-        "foto": Inzerat.query.filter_by(kategoria="Foto, video a podujatia").count(),
-        "oslavy": Inzerat.query.filter_by(kategoria="Oslavy a catering").count(),
-        "ostatne": Inzerat.query.filter_by(kategoria="Ostatné").count()
+        "doucovanie": Inzerat.query.filter_by(kategoria="Doučovanie").count(),
+        "online": Inzerat.query.filter_by(kategoria="Online služby").count(),
+        "administrativa": Inzerat.query.filter_by(kategoria="Administratíva a financie").count(),
+        "starostlivost": Inzerat.query.filter_by(kategoria="Starostlivosť a pomoc").count(),
+        "krasa": Inzerat.query.filter_by(kategoria="Krása a zdravie").count(),
+        "fotografovanie": Inzerat.query.filter_by(kategoria="Fotografovanie").count(),
+        "preklady": Inzerat.query.filter_by(kategoria="Preklady").count()
     }
 
     return dict(kategorie_pocty=kategorie_pocty)
@@ -221,16 +236,30 @@ def index():
     return render_template("stranky/index.html")
 
 
-@app.route("/remeselne-a-stavebne-prace")
-def remeselne_stavebne_prace():
+@app.route("/dom-a-byvanie")
+def dom_a_byvanie():
     inzeraty = Inzerat.query.filter_by(
-        kategoria="Remeselné a stavebné práce"
+        kategoria="Dom a bývanie"
     ).order_by(
         Inzerat.datum_pridania.desc()
     ).all()
 
     return render_template(
-        "kategorie/remeselne_stavebne_prace.html",
+        "kategorie/dom_a_byvanie.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/zahrada-a-exterier")
+def zahrada_a_exterier():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Záhrada a exteriér"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/zahrada_a_exterier.html",
         inzeraty=inzeraty
     )
 
@@ -244,49 +273,91 @@ def stahovanie_doprava():
     ).all()
 
     return render_template(
-        "kategorie/stahovanie_doprava.html",
+        "kategorie/stahovanie_a_doprava.html",
         inzeraty=inzeraty
     )
 
 
-@app.route("/pomoc-v-domacnosti")
-def pomoc_v_domacnosti():
+@app.route("/doucovanie")
+def doucovanie():
     inzeraty = Inzerat.query.filter_by(
-        kategoria="Pomoc v domácnosti"
+        kategoria="Doučovanie"
     ).order_by(
         Inzerat.datum_pridania.desc()
     ).all()
 
     return render_template(
-        "kategorie/pomoc_v_domacnosti.html",
+        "kategorie/doucovanie.html",
         inzeraty=inzeraty
     )
 
 
-@app.route("/krasa-a-starostlivost")
-def krasa_starostlivost():
+@app.route("/online-sluzby")
+def online_sluzby():
     inzeraty = Inzerat.query.filter_by(
-        kategoria="Krása a starostlivosť"
+        kategoria="Online služby"
     ).order_by(
         Inzerat.datum_pridania.desc()
     ).all()
 
     return render_template(
-        "kategorie/krasa_starostlivost.html",
+        "kategorie/online_sluzby.html",
         inzeraty=inzeraty
     )
 
 
-@app.route("/doucovanie-a-vzdelavanie")
-def doucovanie_vzdelavanie():
+@app.route("/administrativa-a-financie")
+def administrativa_a_financie():
     inzeraty = Inzerat.query.filter_by(
-        kategoria="Doučovanie a vzdelávanie"
+        kategoria="Administratíva a financie"
     ).order_by(
         Inzerat.datum_pridania.desc()
     ).all()
 
     return render_template(
-        "kategorie/doucovanie_vzdelavanie.html",
+        "kategorie/administrativa_a_financie.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/starostlivost-a-pomoc")
+def starostlivost_a_pomoc():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Starostlivosť a pomoc"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/starostlivost_a_pomoc.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/krasa-a-zdravie")
+def krasa_a_zdravie():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Krása a zdravie"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/krasa_a_zdravie.html",
+        inzeraty=inzeraty
+    )
+
+
+@app.route("/fotografovanie")
+def fotografovanie():
+    inzeraty = Inzerat.query.filter_by(
+        kategoria="Fotografovanie"
+    ).order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
+
+    return render_template(
+        "kategorie/fotografovanie.html",
         inzeraty=inzeraty
     )
 
@@ -301,62 +372,6 @@ def preklady():
 
     return render_template(
         "kategorie/preklady.html",
-        inzeraty=inzeraty
-    )
-
-
-@app.route("/it-a-online-sluzby")
-def it_online_sluzby():
-    inzeraty = Inzerat.query.filter_by(
-        kategoria="IT a online služby"
-    ).order_by(
-        Inzerat.datum_pridania.desc()
-    ).all()
-
-    return render_template(
-        "kategorie/it_online_sluzby.html",
-        inzeraty=inzeraty
-    )
-
-
-@app.route("/foto-video-a-podujatia")
-def foto_video_podujatia():
-    inzeraty = Inzerat.query.filter_by(
-        kategoria="Foto, video a podujatia"
-    ).order_by(
-        Inzerat.datum_pridania.desc()
-    ).all()
-
-    return render_template(
-        "kategorie/foto_video_podujatia.html",
-        inzeraty=inzeraty
-    )
-
-
-@app.route("/oslavy-a-catering")
-def oslavy_catering():
-    inzeraty = Inzerat.query.filter_by(
-        kategoria="Oslavy a catering"
-    ).order_by(
-        Inzerat.datum_pridania.desc()
-    ).all()
-
-    return render_template(
-        "kategorie/oslavy_catering.html",
-        inzeraty=inzeraty
-    )
-
-
-@app.route("/ostatne")
-def ostatne():
-    inzeraty = Inzerat.query.filter_by(
-        kategoria="Ostatné"
-    ).order_by(
-        Inzerat.datum_pridania.desc()
-    ).all()
-
-    return render_template(
-        "kategorie/ostatne.html",
         inzeraty=inzeraty
     )
 
@@ -388,6 +403,18 @@ def detail_inzeratu(inzerat_id):
         Hodnotenie.datum.desc()
     ).all()
 
+    recenzie = db.session.query(
+        Recenzia,
+        User
+    ).join(
+        User,
+        Recenzia.autor_user_id == User.id
+    ).filter(
+        Recenzia.inzerat_id == inzerat.id
+    ).order_by(
+        Recenzia.datum.desc()
+    ).all()
+
     pocet_hodnoteni = len(hodnotenia)
 
     if pocet_hodnoteni > 0:
@@ -405,6 +432,7 @@ def detail_inzeratu(inzerat_id):
         pocet_inzeratov=pocet_inzeratov,
         dalsie_inzeraty=dalsie_inzeraty,
         hodnotenia=hodnotenia,
+        recenzie=recenzie,
         priemer_hodnotenia=priemer_hodnotenia,
         pocet_hodnoteni=pocet_hodnoteni
     )
@@ -485,6 +513,7 @@ def pridat_inzerat():
         else:
             nazov = request.form.get("title", "").strip()
             kategoria = request.form.get("category", "").strip()
+            podkategoria = request.form.get("subcategory", "").strip()
             cena = request.form.get("price", "").strip()
             lokalita = request.form.get("location", "").strip()
             popis = request.form.get("description", "").strip()
@@ -532,6 +561,7 @@ def pridat_inzerat():
                     novy_inzerat = Inzerat(
                         nazov=nazov,
                         kategoria=kategoria,
+                        podkategoria=podkategoria,
                         cena=cena,
                         lokalita=lokalita,
                         popis=popis,
@@ -770,6 +800,7 @@ def zmazat_inzerat(inzerat_id):
         return redirect(url_for("moje_inzeraty"))
 
     Hodnotenie.query.filter_by(inzerat_id=inzerat.id).delete()
+    Recenzia.query.filter_by(inzerat_id=inzerat.id).delete()
 
     db.session.delete(inzerat)
     db.session.commit()
@@ -871,12 +902,10 @@ def pridat_hodnotenie(inzerat_id):
         return redirect(url_for("detail_inzeratu", inzerat_id=inzerat.id))
 
     hodnotenie = request.form.get("hodnotenie")
-    komentar = request.form.get("komentar", "").strip()
 
     if hodnotenie:
         nove_hodnotenie = Hodnotenie(
             hodnotenie=int(hodnotenie),
-            komentar=komentar,
             inzerat_id=inzerat.id,
             hodnoteny_user_id=inzerat.user_id,
             autor_user_id=session["user_id"]
@@ -887,9 +916,9 @@ def pridat_hodnotenie(inzerat_id):
 
     return redirect(url_for("detail_inzeratu", inzerat_id=inzerat.id))
 
+
 @app.route("/pridat-recenzie/<int:inzerat_id>", methods=["POST"])
 def pridat_recenzie(inzerat_id):
-
     if not session.get("user_id"):
         return redirect(url_for("prihlasenie"))
 

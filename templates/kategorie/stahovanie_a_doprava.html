@@ -1,6 +1,6 @@
 {% extends "layout/base.html" %}
 
-{% block title %}Preklady{% endblock %}
+{% block title %}Sťahovanie a doprava{% endblock %}
 
 {% block content %}
 
@@ -10,24 +10,26 @@
 
         <div class="side-filter">
 
-            <h2>Kategória</h2>
+            <h2>Podkategórie</h2>
 
             <div class="subcategories">
-                <a href="#">Preklady</a>
+                <a href="#">Sťahovanie</a>
+                <a href="#">Preprava</a>
+                <a href="#">Iné</a>
             </div>
 
         </div>
 
         <div class="ads-list">
 
-            <h1>Preklady</h1>
+            <h1>Sťahovanie a doprava</h1>
 
             {% for inzerat in inzeraty %}
 
                 <div class="ad-item">
 
                     <div class="ad-icon">
-                        🌍
+                        🚚
                     </div>
 
                     <div class="ad-content">

@@ -1,6 +1,6 @@
 {% extends "layout/base.html" %}
 
-{% block title %}Preklady{% endblock %}
+{% block title %}Krása a zdravie{% endblock %}
 
 {% block content %}
 
@@ -10,24 +10,29 @@
 
         <div class="side-filter">
 
-            <h2>Kategória</h2>
+            <h2>Podkategórie</h2>
 
             <div class="subcategories">
-                <a href="#">Preklady</a>
+                <a href="#">Kaderníctvo</a>
+                <a href="#">Kozmetika</a>
+                <a href="#">Manikúra a pedikúra</a>
+                <a href="#">Masáže</a>
+                <a href="#">Tetovanie</a>
+                <a href="#">Iné</a>
             </div>
 
         </div>
 
         <div class="ads-list">
 
-            <h1>Preklady</h1>
+            <h1>Krása a zdravie</h1>
 
             {% for inzerat in inzeraty %}
 
                 <div class="ad-item">
 
                     <div class="ad-icon">
-                        🌍
+                        💄
                     </div>
 
                     <div class="ad-content">

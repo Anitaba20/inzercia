@@ -1,6 +1,6 @@
 {% extends "layout/base.html" %}
 
-{% block title %}Preklady{% endblock %}
+{% block title %}Doučovanie{% endblock %}
 
 {% block content %}
 
@@ -13,21 +13,21 @@
             <h2>Kategória</h2>
 
             <div class="subcategories">
-                <a href="#">Preklady</a>
+                <a href="#">Doučovanie</a>
             </div>
 
         </div>
 
         <div class="ads-list">
 
-            <h1>Preklady</h1>
+            <h1>Doučovanie</h1>
 
             {% for inzerat in inzeraty %}
 
                 <div class="ad-item">
 
                     <div class="ad-icon">
-                        🌍
+                        📚
                     </div>
 
                     <div class="ad-content">
@@ -43,6 +43,7 @@
 
                         <strong>
                             Cena:
+
                             {% if inzerat.cena %}
                                 {{ inzerat.cena }}
                             {% else %}

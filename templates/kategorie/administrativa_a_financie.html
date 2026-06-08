@@ -1,6 +1,6 @@
 {% extends "layout/base.html" %}
 
-{% block title %}Preklady{% endblock %}
+{% block title %}Administratíva a financie{% endblock %}
 
 {% block content %}
 
@@ -10,24 +10,28 @@
 
         <div class="side-filter">
 
-            <h2>Kategória</h2>
+            <h2>Podkategórie</h2>
 
             <div class="subcategories">
-                <a href="#">Preklady</a>
+                <a href="#">Účtovníctvo</a>
+                <a href="#">Mzdy a personalistika</a>
+                <a href="#">Administratívna pomoc</a>
+                <a href="#">Daňové priznania</a>
+                <a href="#">Iné</a>
             </div>
 
         </div>
 
         <div class="ads-list">
 
-            <h1>Preklady</h1>
+            <h1>Administratíva a financie</h1>
 
             {% for inzerat in inzeraty %}
 
                 <div class="ad-item">
 
                     <div class="ad-icon">
-                        🌍
+                        📊
                     </div>
 
                     <div class="ad-content">
@@ -43,6 +47,7 @@
 
                         <strong>
                             Cena:
+
                             {% if inzerat.cena %}
                                 {{ inzerat.cena }}
                             {% else %}
