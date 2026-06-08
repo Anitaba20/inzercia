@@ -165,6 +165,68 @@ def detail_inzeratu(inzerat_id):
     )
 
 
+@app.route("/kontaktovat-poskytovatela/<int:inzerat_id>", methods=["GET", "POST"])
+def kontaktovat_poskytovatela(inzerat_id):
+    chyba = ""
+    uspech = ""
+
+    inzerat = Inzerat.query.get_or_404(inzerat_id)
+    poskytovatel = User.query.get(inzerat.user_id)
+
+    if request.method == "POST":
+        meno = request.form.get("meno", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        text = request.form.get("sprava", "").strip()
+
+        if not meno or not email or not text:
+            chyba = "Vyplňte všetky povinné polia."
+
+        elif not poskytovatel:
+            chyba = "Poskytovateľ neexistuje."
+
+        else:
+            sprava = Message(
+                subject=f"Nová správa k inzerátu: {inzerat.nazov}",
+                recipients=[poskytovatel.email],
+                reply_to=email
+            )
+
+            sprava.body = f"""
+Dobrý deň,
+
+niekto vás kontaktoval cez stránku služby.sk.
+
+Inzerát:
+{inzerat.nazov}
+
+Meno záujemcu:
+{meno}
+
+E-mail záujemcu:
+{email}
+
+Správa:
+{text}
+
+Na túto správu môžete odpovedať priamo na e-mail záujemcu:
+{email}
+
+služby.sk
+"""
+
+            mail.send(sprava)
+
+            uspech = "Správa bola úspešne odoslaná poskytovateľovi."
+
+    return render_template(
+        "inzeraty/kontaktovat_poskytovatela.html",
+        chyba=chyba,
+        uspech=uspech,
+        inzerat=inzerat,
+        poskytovatel=poskytovatel
+    )
+
+
 @app.route("/pridat-inzerat", methods=["GET", "POST"])
 def pridat_inzerat():
     chyba = ""
@@ -398,5 +460,3 @@ def reset_hesla(token):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-    

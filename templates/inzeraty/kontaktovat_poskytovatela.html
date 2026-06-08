@@ -1,0 +1,54 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Kontaktovať poskytovateľa{% endblock %}
+
+{% block content %}
+
+<div class="main-page">
+
+    <div class="add-ad-page">
+
+        <h1>Kontaktovať poskytovateľa</h1>
+
+        <form class="add-ad-form" method="POST">
+
+            {% if chyba %}
+                <p class="error-message">{{ chyba }}</p>
+            {% endif %}
+
+            {% if uspech %}
+                <p class="success-message">{{ uspech }}</p>
+            {% endif %}
+
+            <p>
+                Správa k inzerátu:
+                <strong>{{ inzerat.nazov }}</strong>
+            </p>
+
+            {% if poskytovatel %}
+                <p>
+                    Poskytovateľ:
+                    <strong>{{ poskytovatel.username }}</strong>
+                </p>
+            {% endif %}
+
+            <label>Vaše meno <span>*</span></label>
+            <input type="text" name="meno">
+
+            <label>Váš e-mail <span>*</span></label>
+            <input type="email" name="email">
+
+            <label>Správa <span>*</span></label>
+            <textarea name="sprava"></textarea>
+
+            <button type="submit" class="register-btn">
+                Odoslať správu
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
