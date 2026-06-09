@@ -12,6 +12,37 @@ Výsledky vyhľadávania
 
         <h1>Výsledky vyhľadávania</h1>
 
+        <form class="search-filter-form"
+              method="GET"
+              action="{{ url_for('vyhladavanie') }}">
+
+            <input type="hidden" name="q" value="{{ q }}">
+            <input type="hidden" name="location" value="{{ location }}">
+            <input type="hidden" name="psc" value="{{ psc }}">
+
+            <input type="number"
+                   name="price_min"
+                   value="{{ price_min }}"
+                   placeholder="Cena od">
+
+            <input type="number"
+                   name="price_max"
+                   value="{{ price_max }}"
+                   placeholder="Cena do">
+
+            <select name="date_filter">
+                <option value="">Dátum pridania</option>
+                <option value="today" {% if date_filter == "today" %}selected{% endif %}>Dnes</option>
+                <option value="7" {% if date_filter == "7" %}selected{% endif %}>Posledných 7 dní</option>
+                <option value="30" {% if date_filter == "30" %}selected{% endif %}>Posledných 30 dní</option>
+            </select>
+
+            <button type="submit">
+                Filtrovať
+            </button>
+
+        </form>
+
         {% if inzeraty %}
 
             <div class="search-results-list">
@@ -25,6 +56,10 @@ Výsledky vyhľadávania
 
                         <div class="search-result-meta">
                             📍 {{ inzerat.lokalita }}
+
+                            {% if inzerat.psc %}
+                                | PSČ: {{ inzerat.psc }}
+                            {% endif %}
                         </div>
 
                         <p>
@@ -37,12 +72,16 @@ Výsledky vyhľadávania
 
                         <strong>
                             Cena:
-                            {% if inzerat.cena %}
-                                {{ inzerat.cena }}
-                            {% else %}
+                            {% if inzerat.cena_dohodou %}
                                 dohodou
+                            {% else %}
+                                {{ inzerat.cena }} €
                             {% endif %}
                         </strong>
+
+                        <p class="search-result-date">
+                            Pridané: {{ inzerat.datum_pridania.strftime("%d. %m. %Y") }}
+                        </p>
 
                     </a>
 

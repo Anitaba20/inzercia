@@ -1071,6 +1071,67 @@ body{
     border-radius: 12px;
 }
 
+/*2*/
+.search-filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+
+    background: white;
+    padding: 20px;
+    margin-bottom: 25px;
+
+    border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+}
+
+.search-filter-form input,
+.search-filter-form select {
+    height: 42px;
+    padding: 0 12px;
+
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+
+    font-size: 15px;
+}
+
+.search-filter-form input[type="number"] {
+    width: 140px;
+}
+
+.search-filter-form select {
+    width: 180px;
+}
+
+.search-filter-form button {
+    height: 42px;
+    padding: 0 22px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #2962ff;
+    color: white;
+
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.search-filter-form button:hover {
+    background: #1747d1;
+}
+
+.search-result-date {
+    margin-top: 12px;
+    color: #777;
+    font-size: 14px;
+}
+
 /*INZERAT CARD*/
 .inzerat-card {
     background: white;
@@ -1082,4 +1143,11 @@ body{
 
 .inzerat-card h2 {
     margin-bottom: 10px;
+}
+
+/* CENA PRIDAŤ INZERÁT */
+.cena-info {
+    font-size: 10px !important;
+    color: #dc3545 !important;
+    display: block;
 }

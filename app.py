@@ -78,15 +78,23 @@ class Inzerat(db.Model):
     nazov = db.Column(db.String(200), nullable=False)
     kategoria = db.Column(db.String(100), nullable=False)
     podkategoria = db.Column(db.String(100))
-    cena = db.Column(db.String(100))
+
+    cena = db.Column(db.Integer)
+    cena_dohodou = db.Column(db.Boolean, default=False)
+
     lokalita = db.Column(db.String(100), nullable=False)
+    psc = db.Column(db.String(10))
+
     popis = db.Column(db.Text, nullable=False)
 
     obrazok = db.Column(db.String(255))
     obrazok_2 = db.Column(db.String(255))
     obrazok_3 = db.Column(db.String(255))
 
-    datum_pridania = db.Column(db.DateTime, default=datetime.utcnow)
+    datum_pridania = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
 
     user_id = db.Column(
         db.Integer,
@@ -514,9 +522,13 @@ def pridat_inzerat():
             nazov = request.form.get("title", "").strip()
             kategoria = request.form.get("category", "").strip()
             podkategoria = request.form.get("subcategory", "").strip()
-            cena = request.form.get("price", "").strip()
+            cena_text = request.form.get("price", "").strip()
+            cena_dohodou = request.form.get("cena_dohodou") == "on"
             lokalita = request.form.get("location", "").strip()
+            psc = request.form.get("psc", "").strip()
             popis = request.form.get("description", "").strip()
+
+            cena = None
 
             obrazok_nazov = None
             obrazok_2_nazov = None
@@ -529,7 +541,25 @@ def pridat_inzerat():
             if not nazov or not kategoria or not lokalita or not popis:
                 chyba = "Vyplňte všetky povinné polia."
 
+            elif psc and not psc.isdigit():
+                chyba = "PSČ môže obsahovať iba čísla."
+
+            elif psc and len(psc) != 5:
+                chyba = "PSČ musí mať 5 číslic."
+
+            elif not cena_dohodou and not cena_text:
+                chyba = "Zadajte cenu alebo označte Cena dohodou."
+
+            elif cena_dohodou and cena_text:
+                chyba = "Ak označíte Cena dohodou, pole Cena nechajte prázdne."
+
+            elif cena_text and not cena_text.isdigit():
+                chyba = "Cena môže obsahovať iba číslo v EUR."
+
             else:
+                if cena_text:
+                    cena = int(cena_text)
+
                 if subor_1 and subor_1.filename != "":
                     if allowed_file(subor_1.filename):
                         povodny_nazov = secure_filename(subor_1.filename)
@@ -563,7 +593,9 @@ def pridat_inzerat():
                         kategoria=kategoria,
                         podkategoria=podkategoria,
                         cena=cena,
+                        cena_dohodou=cena_dohodou,
                         lokalita=lokalita,
+                        psc=psc,
                         popis=popis,
                         obrazok=obrazok_nazov,
                         obrazok_2=obrazok_2_nazov,
@@ -958,8 +990,12 @@ def podkategoria(nazov):
 @app.route("/vyhladavanie")
 def vyhladavanie():
 
-    q = request.args.get("q", "")
-    location = request.args.get("location", "")
+    q = request.args.get("q", "").strip()
+    location = request.args.get("location", "").strip()
+    psc = request.args.get("psc", "").strip()
+    price_min = request.args.get("price_min", "").strip()
+    price_max = request.args.get("price_max", "").strip()
+    date_filter = request.args.get("date_filter", "").strip()
 
     vysledky = Inzerat.query
 
@@ -974,17 +1010,63 @@ def vyhladavanie():
         )
 
     if location:
+        if location.isdigit() and len(location) == 5:
+            vysledky = vysledky.filter(
+                Inzerat.psc == location
+            )
+        else:
+            vysledky = vysledky.filter(
+                Inzerat.lokalita.ilike(f"%{location}%")
+            )
+
+    if psc:
         vysledky = vysledky.filter(
-            Inzerat.lokalita.ilike(f"%{location}%")
+            Inzerat.psc == psc
         )
 
-    inzeraty = vysledky.order_by(Inzerat.datum_pridania.desc()).all()
+    if price_min:
+        vysledky = vysledky.filter(
+            Inzerat.cena_dohodou == False,
+            Inzerat.cena >= int(price_min)
+        )
+
+    if price_max:
+        vysledky = vysledky.filter(
+            Inzerat.cena_dohodou == False,
+            Inzerat.cena <= int(price_max)
+        )
+
+    if date_filter == "today":
+        dnes = datetime.utcnow().date()
+        vysledky = vysledky.filter(
+            db.func.date(Inzerat.datum_pridania) == dnes
+        )
+
+    elif date_filter == "7":
+        od_dna = datetime.utcnow() - timedelta(days=7)
+        vysledky = vysledky.filter(
+            Inzerat.datum_pridania >= od_dna
+        )
+
+    elif date_filter == "30":
+        od_dna = datetime.utcnow() - timedelta(days=30)
+        vysledky = vysledky.filter(
+            Inzerat.datum_pridania >= od_dna
+        )
+
+    inzeraty = vysledky.order_by(
+        Inzerat.datum_pridania.desc()
+    ).all()
 
     return render_template(
         "vyhladavanie.html",
         inzeraty=inzeraty,
         q=q,
-        location=location
+        location=location,
+        psc=psc,
+        price_min=price_min,
+        price_max=price_max,
+        date_filter=date_filter
     )
 
 if __name__ == "__main__":

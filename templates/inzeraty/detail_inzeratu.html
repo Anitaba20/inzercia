@@ -24,6 +24,10 @@
 
             <p class="detail-location">
                 📍 {{ inzerat.lokalita }}
+
+                {% if inzerat.psc %}
+                    | PSČ: {{ inzerat.psc }}
+                {% endif %}
             </p>
 
             <p class="detail-category">
@@ -44,10 +48,10 @@
             <h2>
                 Cena:
 
-                {% if inzerat.cena %}
-                    {{ inzerat.cena }}
-                {% else %}
+                {% if inzerat.cena_dohodou %}
                     dohodou
+                {% else %}
+                    {{ inzerat.cena }} €
                 {% endif %}
             </h2>
 

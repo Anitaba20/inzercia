@@ -54,14 +54,36 @@
             </select>
 
             <label>Cena</label>
-            <input type="text"
+            <input type="number"
                    name="price"
-                   placeholder="napr. dohodou alebo 30 €/hod">
+                   min="0"
+                   step="1"
+                   placeholder="napr. 50">
+
+            <div class="price-checkbox">
+                <input type="checkbox"
+                       name="cena_dohodou"
+                       id="cena_dohodou">
+
+                <label for="cena_dohodou">
+                    Cena dohodou
+                </label>
+            </div>
+
+            <p class="field-note">
+                Cena sa uvádza v EUR alebo označte možnosť „Cena dohodou“.
+            </p>
 
             <label>Lokalita <span>*</span></label>
             <input type="text"
                    name="location"
                    placeholder="napr. Bratislava">
+
+            <label>PSČ</label>
+            <input type="text"
+                   name="psc"
+                   placeholder="napr. 82105"
+                   maxlength="10">
 
             <label>Popis služby <span>*</span></label>
             <textarea name="description"
