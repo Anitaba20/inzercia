@@ -1,9 +1,19 @@
-<div class="page">
+<footer class="footer">
 
-    <footer class="footer">
+    <div class="footer-links">
 
-        <p>© 2026 služby.sk</p>
+        <a href="{{ url_for('o_nas') }}">O nás</a>
 
-    </footer>
+        <a href="{{ url_for('kontakt') }}">Kontakt</a>
 
-</div>
+        <a href="{{ url_for('podmienky_pouzivania') }}">Podmienky používania</a>
+
+        <a href="{{ url_for('ochrana_osobnych_udajov') }}">Ochrana osobných údajov</a>
+
+    </div>
+
+    <div class="footer-copy">
+        © 2026 sluzby.sk | inzercia služieb
+    </div>
+
+</footer>

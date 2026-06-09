@@ -11,13 +11,11 @@
         <section class="detail-main">
 
             <div class="detail-actions">
-
                 <button>🔗 Zdieľať</button>
 
                 <button onclick="window.print()">
                     🖨️ Vytlačiť
                 </button>
-
             </div>
 
             <h1>{{ inzerat.nazov }}</h1>
@@ -73,12 +71,10 @@
             </p>
 
             <div class="contact-section">
-
                 <a href="{{ url_for('kontaktovat_poskytovatela', inzerat_id=inzerat.id) }}"
                    class="contact-btn">
                     Kontaktovať poskytovateľa
                 </a>
-
             </div>
 
             {% if session.get("user_id") and session.get("user_id") != inzerat.user_id %}
@@ -91,16 +87,24 @@
                           action="{{ url_for('pridat_hodnotenie', inzerat_id=inzerat.id) }}"
                           class="rating-form">
 
-                        <label>Hodnotenie</label>
+                        <div class="star-rating">
 
-                        <select name="hodnotenie" required>
-                            <option value="">Vyberte hodnotenie</option>
-                            <option value="5">⭐⭐⭐⭐⭐ 5</option>
-                            <option value="4">⭐⭐⭐⭐ 4</option>
-                            <option value="3">⭐⭐⭐ 3</option>
-                            <option value="2">⭐⭐ 2</option>
-                            <option value="1">⭐ 1</option>
-                        </select>
+                            <input type="radio" id="star5" name="hodnotenie" value="5" required>
+                            <label for="star5">★</label>
+
+                            <input type="radio" id="star4" name="hodnotenie" value="4">
+                            <label for="star4">★</label>
+
+                            <input type="radio" id="star3" name="hodnotenie" value="3">
+                            <label for="star3">★</label>
+
+                            <input type="radio" id="star2" name="hodnotenie" value="2">
+                            <label for="star2">★</label>
+
+                            <input type="radio" id="star1" name="hodnotenie" value="1">
+                            <label for="star1">★</label>
+
+                        </div>
 
                         <button type="submit" class="register-btn">
                             Odoslať hodnotenie
@@ -113,8 +117,6 @@
             {% endif %}
 
             <section class="reviews">
-
-                <h3>Hodnotenia</h3>
 
                 {% if hodnotenia %}
 
@@ -138,27 +140,17 @@
 
                     {% endfor %}
 
-                {% else %}
-
-                    <div class="review">
-                        <p>Zatiaľ bez hodnotení.</p>
-                    </div>
-
                 {% endif %}
 
             </section>
 
             <section class="reviews">
 
-                <h3>Recenzie</h3>
-
-                {% if session.get("user_id") %}
+                {% if session.get("user_id") and session.get("user_id") != inzerat.user_id %}
 
                     <form method="POST"
                           action="{{ url_for('pridat_recenzie', inzerat_id=inzerat.id) }}"
                           class="discussion-form">
-
-                        <label>Recenzia</label>
 
                         <textarea name="text"
                                   placeholder="Napíšte svoju skúsenosť s touto službou..."
@@ -170,7 +162,7 @@
 
                     </form>
 
-                {% else %}
+                {% elif not session.get("user_id") %}
 
                     <p>
                         Pre pridanie recenzie sa musíte prihlásiť.
@@ -199,12 +191,6 @@
                         </div>
 
                     {% endfor %}
-
-                {% else %}
-
-                    <div class="review">
-                        <p>Zatiaľ bez recenzií.</p>
-                    </div>
 
                 {% endif %}
 
@@ -255,17 +241,13 @@
             <h3>Poskytovateľ</h3>
 
             {% if poskytovatel %}
-
                 <p>
                     <strong>{{ poskytovatel.username }}</strong>
                 </p>
-
             {% else %}
-
                 <p>
                     <strong>Neznámy používateľ</strong>
                 </p>
-
             {% endif %}
 
             {% if priemer_hodnotenia %}
@@ -289,11 +271,9 @@
                 {% for iny_inzerat in dalsie_inzeraty %}
 
                     <div class="other-ad">
-
                         <a href="{{ url_for('detail_inzeratu', inzerat_id=iny_inzerat.id) }}">
                             {{ iny_inzerat.nazov }}
                         </a>
-
                     </div>
 
                 {% endfor %}

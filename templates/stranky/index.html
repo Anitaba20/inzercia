@@ -6,52 +6,72 @@ služby.sk
 
 {% block content %}
 
-<section class="homepage-hero">
+<div class="main-page">
 
-    <div class="homepage-hero-content">
+    <section class="homepage-hero">
 
-        <h1>Nájdi službu</h1>
+        <div class="homepage-hero-content">
 
-        <form class="homepage-search"
-              method="GET"
-              action="{{ url_for('vyhladavanie') }}">
+            <h1>Nájdi službu</h1>
 
-            <div class="search-field">
-                <label>Čo hľadáte?</label>
-                <input type="text"
-                       name="q"
-                       placeholder="elektrikár, maliar, upratovanie">
+            <form class="homepage-search"
+                  method="GET"
+                  action="{{ url_for('vyhladavanie') }}">
+
+                <div class="search-field">
+                    <label>Čo hľadáte?</label>
+                    <input type="text"
+                           name="q"
+                           placeholder="elektrikár, maliar, upratovanie">
+                </div>
+
+                <div class="search-field">
+                    <label>Lokalita alebo PSČ</label>
+                    <input type="text"
+                           name="location"
+                           placeholder="Bratislava">
+                </div>
+
+                <div class="search-field small">
+                    <label>Cena od</label>
+                    <input type="number"
+                           name="price_min"
+                           placeholder="0">
+                </div>
+
+                <div class="search-field small">
+                    <label>Cena do</label>
+                    <input type="number"
+                           name="price_max"
+                           placeholder="100">
+                </div>
+
+                <button type="submit">
+                    Hľadať
+                </button>
+
+            </form>
+
+            <div class="homepage-categories">
+
+                <img src="{{ url_for('static', filename='dom.jpg') }}" alt="Dom a bývanie">
+
+                <img src="{{ url_for('static', filename='remesla.jpg') }}" alt="Remeslá">
+
+                <img src="{{ url_for('static', filename='it.jpg') }}" alt="IT služby">
+
+                <img src="{{ url_for('static', filename='krasa.jpg') }}" alt="Krása a zdravie">
+
+                <img src="{{ url_for('static', filename='doprava.jpg') }}" alt="Doprava">
+
+                <img src="{{ url_for('static', filename='vzdelanie.jpg') }}" alt="Vzdelávanie">
+
             </div>
 
-            <div class="search-field">
-                <label>Lokalita alebo PSČ</label>
-                <input type="text"
-                       name="location"
-                       placeholder="Bratislava">
-            </div>
+        </div>
 
-            <div class="search-field small">
-                <label>Cena od</label>
-                <input type="number"
-                       name="price_min"
-                       placeholder="0">
-            </div>
+    </section>
 
-            <div class="search-field small">
-                <label>Cena do</label>
-                <input type="number"
-                       name="price_max"
-                       placeholder="100">
-            </div>
-
-            <button type="submit">
-                Hľadať
-            </button>
-
-        </form>
-
-    </div>
-
-</section>
+</div>
 
 {% endblock %}
