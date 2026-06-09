@@ -955,6 +955,37 @@ def podkategoria(nazov):
         nazov=nazov
     )
 
+@app.route("/vyhladavanie")
+def vyhladavanie():
+
+    q = request.args.get("q", "")
+    location = request.args.get("location", "")
+
+    vysledky = Inzerat.query
+
+    if q:
+        vysledky = vysledky.filter(
+            db.or_(
+                Inzerat.nazov.ilike(f"%{q}%"),
+                Inzerat.popis.ilike(f"%{q}%"),
+                Inzerat.kategoria.ilike(f"%{q}%"),
+                Inzerat.podkategoria.ilike(f"%{q}%")
+            )
+        )
+
+    if location:
+        vysledky = vysledky.filter(
+            Inzerat.lokalita.ilike(f"%{location}%")
+        )
+
+    inzeraty = vysledky.order_by(Inzerat.datum_pridania.desc()).all()
+
+    return render_template(
+        "vyhladavanie.html",
+        inzeraty=inzeraty,
+        q=q,
+        location=location
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

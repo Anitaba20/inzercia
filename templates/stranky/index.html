@@ -6,18 +6,52 @@ služby.sk
 
 {% block content %}
 
-<div class="main-page">
+<section class="homepage-hero">
 
-    <section class="hero">
+    <div class="homepage-hero-content">
 
-        <h1>Inzercia služieb</h1>
+        <h1>Nájdi službu</h1>
 
-        <p>
-            ?
-        </p>
+        <form class="homepage-search"
+              method="GET"
+              action="{{ url_for('vyhladavanie') }}">
 
-    </section>
+            <div class="search-field">
+                <label>Čo hľadáte?</label>
+                <input type="text"
+                       name="q"
+                       placeholder="elektrikár, maliar, upratovanie">
+            </div>
 
-</div>
+            <div class="search-field">
+                <label>Lokalita alebo PSČ</label>
+                <input type="text"
+                       name="location"
+                       placeholder="Bratislava">
+            </div>
+
+            <div class="search-field small">
+                <label>Cena od</label>
+                <input type="number"
+                       name="price_min"
+                       placeholder="0">
+            </div>
+
+            <div class="search-field small">
+                <label>Cena do</label>
+                <input type="number"
+                       name="price_max"
+                       placeholder="100">
+            </div>
+
+            <button type="submit">
+                Hľadať
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
 
 {% endblock %}
